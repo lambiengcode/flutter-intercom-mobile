@@ -12,6 +12,8 @@ class InboxCard extends StatelessWidget {
   final bool isMe;
   final bool seen;
   final bool request;
+  final bool completed;
+  final index;
 
   InboxCard({
     this.uid,
@@ -21,6 +23,8 @@ class InboxCard extends StatelessWidget {
     this.isMe,
     this.seen,
     this.request,
+    this.index,
+    this.completed,
   });
 
   @override
@@ -143,7 +147,15 @@ class InboxCard extends StatelessWidget {
                       name: username,
                       roomID: roomID,
                       request: request,
-                      index: snapshot.data.documents[0].reference,
+                      index: index,
+                      idReceive: uid,
+                      available: completed
+                          ? false
+                          : request && lastMessage == '[\"Image\"]'
+                              ? true
+                              : request == false && lastMessage != '[\"Image\"]'
+                                  ? true
+                                  : false,
                     )));
           },
           child: Container(

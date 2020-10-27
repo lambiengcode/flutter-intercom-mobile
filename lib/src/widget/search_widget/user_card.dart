@@ -26,6 +26,7 @@ class _UserCardState extends State<UserCard> {
         'idReceive': idReceive,
         'id': id,
         'publishAt': DateTime.now(),
+        'completed': false,
       });
     });
     _firstInbox(idSend, idReceive, id);
@@ -105,6 +106,7 @@ class _UserCardState extends State<UserCard> {
                   .collection('requests')
                   .where('idSend', isEqualTo: user.uid)
                   .where('idReceive', isEqualTo: widget.user['id'])
+                  .where('completed', isEqualTo: false)
                   .snapshots(),
               builder: (BuildContext context,
                   AsyncSnapshot<QuerySnapshot> snapshot) {

@@ -12,10 +12,19 @@ import 'package:provider/provider.dart';
 class ChatRoomPage extends StatefulWidget {
   final String name;
   final String roomID;
+  final String idReceive;
   final bool request;
+  final bool available;
   final index;
 
-  ChatRoomPage({this.name, this.roomID, this.index, this.request});
+  ChatRoomPage({
+    this.name,
+    this.roomID,
+    this.index,
+    this.request,
+    this.idReceive,
+    this.available,
+  });
 
   @override
   State<StatefulWidget> createState() => _ChatRoomPageState();
@@ -29,6 +38,7 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
   @override
   void initState() {
     super.initState();
+    print(widget.available);
   }
 
   Color parseColor(String color) {
@@ -218,6 +228,10 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
                 ),
                 InputBottom(
                   request: widget.request,
+                  idReceive: widget.idReceive,
+                  idRoom: widget.roomID,
+                  index: widget.index,
+                  available: widget.available,
                 ),
               ],
             );

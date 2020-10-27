@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:project_message_demo/src/app.dart';
 import 'package:project_message_demo/src/model/user.dart';
 import 'package:project_message_demo/src/service/auth.dart';

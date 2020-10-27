@@ -94,6 +94,8 @@ class _InboxListState extends State<InboxList> {
                     request: widget.documents[index]['idSend'] == user.uid
                         ? true
                         : false,
+                    index: widget.documents[index].reference,
+                    completed: widget.documents[index]['completed'],
                   );
                 });
           },
