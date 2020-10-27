@@ -1,8 +1,11 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
-import 'package:intl/intl.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:project_message_demo/src/model/user.dart';
 import 'package:project_message_demo/src/service/auth.dart';
 import 'package:provider/provider.dart';
@@ -13,6 +16,38 @@ class EditProfilePage extends StatefulWidget {
 }
 
 class _EditProfilePageState extends State<EditProfilePage> {
+
+  File _image;
+  String _username = '';
+
+  Future<String> _uploadImage(file, uid) async {
+    String fileName = uid;
+    StorageReference firebaseStorageRef =
+    FirebaseStorage.instance.ref().child('Profile').child(fileName);
+    StorageUploadTask uploadTask = firebaseStorageRef.putFile(file);
+    StorageTaskSnapshot taskSnapshot = await uploadTask.onComplete;
+    var downUrl = await taskSnapshot.ref.getDownloadURL();
+    String url = downUrl.toString();
+    return url;
+  }
+
+  Future<void> _pickImage(ImageSource source) async {
+    File selected = await ImagePicker.pickImage(source: source);
+    setState(() {
+      _image = selected;
+    });
+  }
+
+  Future<void> _updateRoom(index, username, urlToImage, uid) async {
+    Firestore.instance.runTransaction((Transaction transaction) async {
+      DocumentSnapshot snapshot = await transaction.get(index);
+      await transaction.update(index, {
+        'username': _username == '' ? username : _username,
+        'urlToImage' : _image == null ? urlToImage : await _uploadImage(_image, uid),
+      });
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final sizeWidth = MediaQuery.of(context).size.width;
@@ -24,14 +59,35 @@ class _EditProfilePageState extends State<EditProfilePage> {
         elevation: 1.5,
         backgroundColor: Colors.white,
         centerTitle: true,
-        leading: IconButton(
-          icon: Icon(
-            Feather.check,
-            size: sizeWidth / 14.5,
-            color: Colors.blueAccent,
-          ),
-          onPressed: () {
-            Navigator.of(context).pop(context);
+        leading: StreamBuilder(
+          stream: Firestore.instance.collection('users').where('id', isEqualTo: user.uid).snapshots(),
+          builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+            if (!snapshot.hasData) {
+              return IconButton(
+                icon: Icon(
+                  Feather.check,
+                  size: sizeWidth / 14.5,
+                  color: Colors.blueAccent,
+                ),
+                onPressed: () {
+
+                },
+              );
+            }
+
+            String username = snapshot.data.documents[0]['username'];
+            String urlToImage = snapshot.data.documents[0]['urlToImage'];
+
+            return IconButton(
+              icon: Icon(
+                Feather.check,
+                size: sizeWidth / 14.5,
+                color: Colors.blueAccent,
+              ),
+              onPressed: () async {
+                await _updateRoom(snapshot.data.documents[0].reference, username, urlToImage, user.uid);
+              },
+            );
           },
         ),
         title: Text(
@@ -78,7 +134,6 @@ class _EditProfilePageState extends State<EditProfilePage> {
 
             String username = snapshot.data.documents[0]['username'];
             String urlToImage = snapshot.data.documents[0]['urlToImage'];
-
             String phone = snapshot.data.documents[0]['phone'];
 
             return ListView(
@@ -86,27 +141,21 @@ class _EditProfilePageState extends State<EditProfilePage> {
                 SizedBox(
                   height: 18.0,
                 ),
-                Container(
-                  height: sizeWidth / 2.75,
-                  width: sizeWidth / 2.75,
-                  decoration: BoxDecoration(
-                    border: Border.all(
-                      color: Color(0xFFBFBEBF),
-                      width: .5,
-                    ),
-                    shape: BoxShape.circle,
-                  ),
+                GestureDetector(
+                  onTap: () async {
+                    try {
+                      await _pickImage(ImageSource.gallery);
+                    } on Exception catch (_) {
+                      throw Exception('Error');
+                    }
+                  },
                   child: Container(
-                    height: sizeWidth / 3,
-                    width: sizeWidth / 3,
+                    height: sizeWidth / 2.75,
+                    width: sizeWidth / 2.75,
                     decoration: BoxDecoration(
                       border: Border.all(
                         color: Color(0xFFBFBEBF),
                         width: .5,
-                      ),
-                      image: DecorationImage(
-                        image: NetworkImage(urlToImage),
-                        fit: BoxFit.cover,
                       ),
                       shape: BoxShape.circle,
                     ),
@@ -114,17 +163,33 @@ class _EditProfilePageState extends State<EditProfilePage> {
                       height: sizeWidth / 3,
                       width: sizeWidth / 3,
                       decoration: BoxDecoration(
-                        color: Colors.black.withOpacity(.2),
+                        border: Border.all(
+                          color: Color(0xFFBFBEBF),
+                          width: .5,
+                        ),
+                        image: DecorationImage(
+                          image: _image != null ? FileImage(_image) :
+                          urlToImage == '' ? AssetImage('images/avt.jpg') : NetworkImage(urlToImage),
+                          fit: BoxFit.cover,
+                        ),
                         shape: BoxShape.circle,
                       ),
-                      child: Icon(
-                        Icons.camera_alt,
-                        color: Colors.white,
-                        size: sizeWidth / 12.8,
+                      child: Container(
+                        height: sizeWidth / 3,
+                        width: sizeWidth / 3,
+                        decoration: BoxDecoration(
+                          color: Colors.black.withOpacity(.2),
+                          shape: BoxShape.circle,
+                        ),
+                        child: Icon(
+                          Icons.camera_alt,
+                          color: Colors.white,
+                          size: sizeWidth / 12.8,
+                        ),
                       ),
                     ),
+                    alignment: Alignment.center,
                   ),
-                  alignment: Alignment.center,
                 ),
                 SizedBox(
                   height: 20.0,
@@ -142,7 +207,8 @@ class _EditProfilePageState extends State<EditProfilePage> {
                         ),
                         initialValue: username,
                         validator: (val) =>
-                            val.length == 0 ? 'Enter your Email' : null,
+                            val.length == 0 ? 'Enter Username' : null,
+                        onChanged: (val) => _username = val.trim(),
                         decoration: InputDecoration(
                           contentPadding: EdgeInsets.only(top: 2.0),
                           labelText: 'Name',
@@ -178,6 +244,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                         validator: (val) =>
                             val.length == 0 ? 'Enter your Phone' : null,
                         decoration: InputDecoration(
+                          enabled: false,
                           contentPadding: EdgeInsets.only(top: 2.0),
                           labelText: 'Phone Number',
                           labelStyle: TextStyle(

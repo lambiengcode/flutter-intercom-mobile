@@ -40,6 +40,8 @@ dependencies:
   cloud_functions: ^0.5.0
   flutter_icons: ^1.0.0+1
   cached_network_image: ^2.2.0+1
+  assets_audio_player: ^2.0.9+2
+  flutter_statusbarcolor: ^0.2.3
 
 dev_dependencies:
   flutter_test:
@@ -59,6 +61,7 @@ flutter:
   # To add assets to your application, add an assets section, like this:
   assets:
     - images/
+    - assets/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

@@ -55,7 +55,7 @@ class _InputBottomState extends State<InputBottom> {
       CollectionReference reference = Firestore.instance.collection("inboxs");
       await reference.add({
         'idSend': idSend,
-        'idReceive': idReceive,
+        'receiveID': idReceive,
         'id': id,
         'publishAt': DateTime.now(),
         'message': message,

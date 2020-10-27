@@ -7,6 +7,11 @@ class Loading extends StatefulWidget {
 
 class _LoadingState extends State<Loading> {
   @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(

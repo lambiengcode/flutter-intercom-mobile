@@ -18,6 +18,10 @@ class _AppState extends State<App> {
   Widget build(BuildContext context) {
     final user = Provider.of<User>(context);
 
-    return user == null ? AuthenticatePage() : HomePage();
+    return user == null
+        ? AuthenticatePage()
+        : HomePage(
+            uid: user.uid,
+          );
   }
 }

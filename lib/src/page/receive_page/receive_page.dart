@@ -62,8 +62,8 @@ class _ReceivePageState extends State<ReceivePage> {
         actions: <Widget>[
           IconButton(
             icon: Icon(
-              Feather.search,
-              size: size.width / 14.5,
+              Feather.sliders,
+              size: size.width / 16.0,
               color: Colors.grey.shade800,
             ),
             onPressed: () {},
@@ -79,7 +79,7 @@ class _ReceivePageState extends State<ReceivePage> {
         child: Column(
           children: [
             SizedBox(
-              height: 20.0,
+              height: 12.0,
             ),
             Expanded(
               child: StreamBuilder(
