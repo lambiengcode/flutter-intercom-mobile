@@ -18,8 +18,8 @@ class _ReceivePageState extends State<ReceivePage> {
     final user = Provider.of<User>(context);
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0.0,
+        backgroundColor: Colors.white,
+        elevation: 2.0,
         centerTitle: false,
         title: Row(
           mainAxisAlignment: MainAxisAlignment.start,
@@ -85,7 +85,7 @@ class _ReceivePageState extends State<ReceivePage> {
               child: StreamBuilder(
                 stream: Firestore.instance
                     .collection('requests')
-                    .where('idSend', isEqualTo: user.uid)
+                    .where('receiveID', isEqualTo: user.uid)
                     .snapshots(),
                 builder: (BuildContext context,
                     AsyncSnapshot<QuerySnapshot> snapshot) {
@@ -93,38 +93,25 @@ class _ReceivePageState extends State<ReceivePage> {
                     return Container();
                   }
 
-                  return StreamBuilder(
-                    stream: Firestore.instance
-                        .collection('requests')
-                        .where('idReceive', isEqualTo: user.uid)
-                        .snapshots(),
-                    builder: (BuildContext context,
-                        AsyncSnapshot<QuerySnapshot> snapshotReceive) {
-                      if (!snapshotReceive.hasData) {
-                        return Container();
+                  List<DocumentSnapshot> docs = snapshot.data.documents;
+
+                  for (int i = 0; i < docs.length - 1; i++) {
+                    for (int j = 0; j < docs.length - 1 - i; j++) {
+                      Timestamp t1 = docs[j]['responcedTime'];
+                      Timestamp t2 = docs[j + 1]['responcedTime'];
+                      if (t1.compareTo(t2) == -1) {
+                        DocumentSnapshot temp = docs[j];
+                        docs[j] = docs[j + 1];
+                        docs[j + 1] = temp;
                       }
+                    }
+                  }
 
-                      List<DocumentSnapshot> docs = snapshot.data.documents;
-                      docs.addAll(snapshotReceive.data.documents);
-
-                      for (int i = 0; i < docs.length - 1; i++) {
-                        for (int j = 0; j < docs.length - 1 - i; j++) {
-                          Timestamp t1 = docs[j]['publishAt'];
-                          Timestamp t2 = docs[j + 1]['publishAt'];
-                          if (t1.compareTo(t2) == -1) {
-                            DocumentSnapshot temp = docs[j];
-                            docs[j] = docs[j + 1];
-                            docs[j + 1] = temp;
-                          }
-                        }
-                      }
-
-                      return FadeAnimation(
-                          .25,
-                          InboxList(
-                            documents: docs,
-                          ));
-                    },
+                  return FadeAnimation(
+                    .25,
+                    InboxList(
+                      documents: docs,
+                    ),
                   );
                 },
               ),

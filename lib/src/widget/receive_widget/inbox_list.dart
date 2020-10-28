@@ -28,77 +28,18 @@ class _InboxListState extends State<InboxList> {
       itemCount: widget.documents.length,
       itemBuilder: (context, index) {
         String room = widget.documents[index]['id'];
+        String responce = widget.documents[index]['responce'];
 
-        return StreamBuilder(
-          stream: Firestore.instance
-              .collection('requests')
-              .where('id', isEqualTo: room)
-              .snapshots(),
-          builder:
-              (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-            if (!snapshot.hasData) {
-              return Container();
-            }
-
-            String temp = '';
-            String user1 = snapshot.data.documents[0]['idSend'];
-            String user2 = snapshot.data.documents[0]['idReceive'];
-
-            if (user.uid == user1) {
-              temp = user2;
-            } else {
-              temp = user1;
-            }
-
-            return StreamBuilder(
-                stream: Firestore.instance
-                    .collection('inboxs')
-                    .where('id', isEqualTo: room)
-                    .orderBy('publishAt', descending: true)
-                    .snapshots(),
-                builder: (BuildContext context,
-                    AsyncSnapshot<QuerySnapshot> snapshot1) {
-                  if (!snapshot1.hasData) {
-                    return Container();
-                  }
-
-                  int lengthMessage = snapshot1.data.documents.length;
-
-                  return InboxCard(
-                    lastMessage: lengthMessage == 0
-                        ? 'Empty'
-                        : snapshot1.data.documents[0]['message']
-                                    .toString()
-                                    .length >
-                                12
-                            ?
-                            //Sent a Image
-                            snapshot1.data.documents[0]['message']
-                                        .toString()
-                                        .substring(0, 12) ==
-                                    'https://fire'
-                                ? '[\"Image\"]'
-                                :
-                                //normal
-                                snapshot1.data.documents[0]['message']
-                            : snapshot1.data.documents[0]['message'],
-                    publishAt: snapshot1.data.documents[0]['publishAt'],
-                    roomID: room,
-                    uid: temp,
-                    isMe: lengthMessage == 0
-                        ? true
-                        : snapshot1.data.documents[0]['idSend'] == user.uid
-                            ? true
-                            : false,
-                    seen: snapshot1.data.documents[0]['seen'],
-                    request: widget.documents[index]['idSend'] == user.uid
-                        ? true
-                        : false,
-                    index: widget.documents[index].reference,
-                    completed: widget.documents[index]['completed'],
-                  );
-                });
-          },
+        return InboxCard(
+          lastMessage: responce.length == 0 ? '[\"Image\"]' : responce,
+          publishAt: widget.documents[index]['responcedTime'],
+          roomID: room,
+          uid: widget.documents[index]['idSend'],
+          isMe: responce.length == 0 ? false : true,
+          seen: true,
+          request: widget.documents[index]['idSend'] == user.uid ? true : false,
+          index: widget.documents[index].reference,
+          completed: widget.documents[index]['completed'],
         );
       },
     );

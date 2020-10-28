@@ -23,29 +23,14 @@ class _UserCardState extends State<UserCard> {
 
       await reference.add({
         'idSend': idSend,
-        'idReceive': idReceive,
+        'receiveID': idReceive,
         'id': id,
         'publishAt': DateTime.now(),
         'completed': false,
-      });
-    });
-    _firstInbox(idSend, idReceive, id);
-  }
-
-  Future<void> _firstInbox(
-    idSend,
-    idReceive,
-    id,
-  ) async {
-    Firestore.instance.runTransaction((Transaction transaction) async {
-      CollectionReference reference = Firestore.instance.collection("inboxs");
-      await reference.add({
-        'idSend': idSend,
-        'idReceive': idReceive,
-        'id': id,
-        'publishAt': DateTime.now(),
-        'message': 'Request',
-        'seen': false,
+        'responce': '',
+        'responcedTime': DateTime.now(),
+        'request': true,
+        'urlToImage': '',
       });
     });
   }
@@ -105,7 +90,7 @@ class _UserCardState extends State<UserCard> {
               stream: Firestore.instance
                   .collection('requests')
                   .where('idSend', isEqualTo: user.uid)
-                  .where('idReceive', isEqualTo: widget.user['id'])
+                  .where('receiveID', isEqualTo: widget.user['id'])
                   .where('completed', isEqualTo: false)
                   .snapshots(),
               builder: (BuildContext context,

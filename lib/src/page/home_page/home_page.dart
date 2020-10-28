@@ -6,7 +6,6 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_icons/flutter_icons.dart';
-import 'package:flutter_statusbarcolor/flutter_statusbarcolor.dart';
 import 'package:project_message_demo/src/page/receive_page/receive_page.dart';
 import 'package:project_message_demo/src/page/request_page.dart/request_page.dart';
 import 'package:project_message_demo/src/page/user/profile_page.dart';
@@ -60,6 +59,9 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
     try {
       await assetsAudioPlayer.open(
         Audio('assets/message.mp3'),
+        showNotification: true,
+        autoStart: true,
+        loopMode: LoopMode.single,
       );
     } catch (t) {
       //stream unreachable
@@ -70,10 +72,6 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
   void initState() {
     super.initState();
 
-    FlutterStatusbarcolor.setStatusBarColor(
-      Colors.transparent,
-      animate: false,
-    );
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitDown,
       DeviceOrientation.portraitUp,
@@ -131,7 +129,10 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
               icon: Icon(Feather.user), title: Text("User")),
         ],
       ),
-      body: _pages[currentPage],
+      body: Padding(
+        padding: EdgeInsets.only(bottom: 60.0),
+        child: _pages[currentPage],
+      ),
     );
   }
 }

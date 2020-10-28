@@ -16,14 +16,13 @@ class EditProfilePage extends StatefulWidget {
 }
 
 class _EditProfilePageState extends State<EditProfilePage> {
-
   File _image;
   String _username = '';
 
   Future<String> _uploadImage(file, uid) async {
     String fileName = uid;
     StorageReference firebaseStorageRef =
-    FirebaseStorage.instance.ref().child('Profile').child(fileName);
+        FirebaseStorage.instance.ref().child('Profile').child(fileName);
     StorageUploadTask uploadTask = firebaseStorageRef.putFile(file);
     StorageTaskSnapshot taskSnapshot = await uploadTask.onComplete;
     var downUrl = await taskSnapshot.ref.getDownloadURL();
@@ -38,12 +37,13 @@ class _EditProfilePageState extends State<EditProfilePage> {
     });
   }
 
-  Future<void> _updateRoom(index, username, urlToImage, uid) async {
+  Future<void> _updateProfile(index, username, urlToImage, uid) async {
     Firestore.instance.runTransaction((Transaction transaction) async {
       DocumentSnapshot snapshot = await transaction.get(index);
       await transaction.update(index, {
         'username': _username == '' ? username : _username,
-        'urlToImage' : _image == null ? urlToImage : await _uploadImage(_image, uid),
+        'urlToImage':
+            _image == null ? urlToImage : await _uploadImage(_image, uid),
       });
     });
   }
@@ -60,8 +60,12 @@ class _EditProfilePageState extends State<EditProfilePage> {
         backgroundColor: Colors.white,
         centerTitle: true,
         leading: StreamBuilder(
-          stream: Firestore.instance.collection('users').where('id', isEqualTo: user.uid).snapshots(),
-          builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+          stream: Firestore.instance
+              .collection('users')
+              .where('id', isEqualTo: user.uid)
+              .snapshots(),
+          builder:
+              (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
             if (!snapshot.hasData) {
               return IconButton(
                 icon: Icon(
@@ -69,9 +73,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                   size: sizeWidth / 14.5,
                   color: Colors.blueAccent,
                 ),
-                onPressed: () {
-
-                },
+                onPressed: () {},
               );
             }
 
@@ -85,7 +87,8 @@ class _EditProfilePageState extends State<EditProfilePage> {
                 color: Colors.blueAccent,
               ),
               onPressed: () async {
-                await _updateRoom(snapshot.data.documents[0].reference, username, urlToImage, user.uid);
+                await _updateProfile(snapshot.data.documents[0].reference,
+                    username, urlToImage, user.uid);
               },
             );
           },
@@ -168,8 +171,11 @@ class _EditProfilePageState extends State<EditProfilePage> {
                           width: .5,
                         ),
                         image: DecorationImage(
-                          image: _image != null ? FileImage(_image) :
-                          urlToImage == '' ? AssetImage('images/avt.jpg') : NetworkImage(urlToImage),
+                          image: _image != null
+                              ? FileImage(_image)
+                              : urlToImage == ''
+                                  ? AssetImage('images/avt.jpg')
+                                  : NetworkImage(urlToImage),
                           fit: BoxFit.cover,
                         ),
                         shape: BoxShape.circle,

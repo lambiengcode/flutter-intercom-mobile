@@ -222,8 +222,8 @@ class InboxCard extends StatelessWidget {
                               fontSize: sizeWidth / 20.5,
                               fontWeight: FontWeight.bold,
                               color: request
-                                  ? Colors.blueAccent
-                                  : Colors.redAccent,
+                                  ? Colors.redAccent
+                                  : Colors.blueAccent,
                             ),
                           ),
                           Text(
