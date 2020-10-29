@@ -20,6 +20,8 @@ class _ReceiveCallPageState extends State<ReceiveCallPage> {
       await transaction.update(widget.index, {
         'request': false,
         'completed': !accept,
+        'responce': accept == false ? 'Rejected Calls' : '',
+        'responcedTime': DateTime.now(),
       });
     });
     assetsAudioPlayer.stop();

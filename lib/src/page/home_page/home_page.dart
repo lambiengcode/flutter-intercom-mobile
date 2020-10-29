@@ -22,7 +22,6 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
 
   var _pages = [
     ReceivePage(),
-    RequestPage(),
     EditProfilePage(),
   ];
 
@@ -90,7 +89,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
     _fcm.configure(
       onMessage: (Map<String, dynamic> message) async {
         print("onMessage: $message");
-        playLocal();
+        //playLocal();
       },
       onLaunch: (Map<String, dynamic> message) async {
         print("onLaunch: $message");
@@ -114,17 +113,16 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
             currentPage = i;
           });
         },
-        elevation: 2.0,
+        elevation: 2.5,
         type: BottomNavigationBarType.fixed,
         showSelectedLabels: false,
         showUnselectedLabels: false,
         selectedItemColor: Colors.blueAccent,
         unselectedItemColor: Colors.grey.shade800,
+        iconSize: 24.0,
         items: [
           BottomNavigationBarItem(
-              icon: Icon(Feather.mail), title: Text("Mail")),
-          BottomNavigationBarItem(
-              icon: Icon(Feather.plus_square), title: Text("Search")),
+              icon: Icon(Feather.mail), title: Text("Receive")),
           BottomNavigationBarItem(
               icon: Icon(Feather.user), title: Text("User")),
         ],

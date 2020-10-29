@@ -2,28 +2,26 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:flutter_icons/flutter_icons.dart';
-import 'package:project_message_demo/src/animation/fade_animation.dart';
 import 'package:project_message_demo/src/model/user.dart';
-import 'package:project_message_demo/src/widget/receive_widget/build_chat_line.dart';
-import 'package:project_message_demo/src/widget/receive_widget/input_bottom.dart';
 import 'package:provider/provider.dart';
 
 class ChatRoomPage extends StatefulWidget {
-  final String name;
-  final String roomID;
+  final String idRequest;
+  final String idSend;
   final String idReceive;
-  final bool request;
-  final bool available;
-  final index;
+  final String responce;
+  final Timestamp publishAt;
+  final Timestamp responcedTime;
+  final String urlToImage;
 
   ChatRoomPage({
-    this.name,
-    this.roomID,
-    this.index,
-    this.request,
+    this.idRequest,
+    this.idSend,
     this.idReceive,
-    this.available,
+    this.publishAt,
+    this.responcedTime,
+    this.responce,
+    this.urlToImage,
   });
 
   @override
@@ -31,212 +29,190 @@ class ChatRoomPage extends StatefulWidget {
 }
 
 class _ChatRoomPageState extends State<ChatRoomPage> {
-  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
-  ScrollController _scrollController = new ScrollController();
-  String stranger = 'Stranger';
+  DateTime responcedTime;
+  String _hour;
+  Color _color;
 
   @override
   void initState() {
     super.initState();
-    print(widget.available);
-  }
+    responcedTime = widget.responcedTime.toDate();
+    _color = widget.responce == 'Accept'
+        ? Colors.green
+        : widget.responce == 'Reject'
+            ? Colors.blueAccent
+            : widget.responce == 'Missing'
+                ? Colors.redAccent
+                : Colors.amber.shade700;
 
-  Color parseColor(String color) {
-    String hex = color.replaceAll("#", "");
-    if (hex.isEmpty) hex = "ffffff";
-    if (hex.length == 3) {
-      hex =
-          '${hex.substring(0, 1)}${hex.substring(0, 1)}${hex.substring(1, 2)}${hex.substring(1, 2)}${hex.substring(2, 3)}${hex.substring(2, 3)}';
+    if (responcedTime.hour < 10 && responcedTime.minute < 10) {
+      _hour = '0${responcedTime.hour}:0${responcedTime.minute}';
+    } else if (responcedTime.hour < 10) {
+      _hour = '0${responcedTime.hour}:${responcedTime.minute}';
+    } else if (responcedTime.minute < 10) {
+      _hour = '${responcedTime.hour}:0${responcedTime.minute}';
+    } else {
+      _hour = '${responcedTime.hour}:${responcedTime.minute}';
     }
-    Color col = Color(int.parse(hex, radix: 16)).withOpacity(1.0);
-    return col;
   }
 
   @override
   Widget build(BuildContext context) {
-    final double sizeWidth = MediaQuery.of(context).size.width;
+    Size size = MediaQuery.of(context).size;
 
-    final user = Provider.of<User>(context);
-
-    return Scaffold(
-      key: _scaffoldKey,
-      appBar: AppBar(
-        elevation: 2.0,
-        backgroundColor: Colors.white,
-        title: StreamBuilder(
-          stream: Firestore.instance
-              .collection('inboxs')
-              .where('id', isEqualTo: widget.roomID)
-              .snapshots(),
-          builder:
-              (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-            if (!snapshot.hasData) {
-              return Container();
-            }
-
-            String user1 = snapshot.data.documents[0]['idSend'];
-            String user2 = snapshot.data.documents[0]['idReceive'];
-
-            String idStranger = user1 == user.uid ? user2 : user1;
-
-            return StreamBuilder(
-              stream: Firestore.instance
-                  .collection('users')
-                  .where('id', isEqualTo: idStranger)
-                  .snapshots(),
-              builder: (BuildContext context,
-                  AsyncSnapshot<QuerySnapshot> snapshot1) {
-                if (!snapshot1.hasData) {
-                  return Container();
-                }
-
-                String username = snapshot1.data.documents[0]['username'];
-                String urlToImage = snapshot1.data.documents[0]['urlToImage'];
-
-                return GestureDetector(
-                  onTap: () {},
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      urlToImage == ''
-                          ? CircleAvatar(
-                              backgroundImage: AssetImage('images/avt.jpg'),
-                              radius: 20.0,
-                            )
-                          : CircleAvatar(
-                              backgroundImage: NetworkImage(urlToImage),
-                              radius: 20.0,
-                            ),
-                      SizedBox(
-                        width: 8.0,
-                      ),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            username,
-                            style: TextStyle(
-                              fontSize: sizeWidth / 23.5,
-                              fontWeight: FontWeight.w800,
-                              color: Colors.grey.shade800,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
+    return Container(
+      height: size.height * .77,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            height: 52.0,
+            width: size.width,
+            child: Row(
+              children: [
+                IconButton(
+                  icon: Icon(
+                    Icons.close,
+                    color: Colors.grey.shade700,
+                    size: size.width / 14.0,
                   ),
-                );
-              },
-            );
-          },
-        ),
-        leading: IconButton(
-          icon: Icon(
-            Feather.arrow_left,
-            color: Colors.black,
-            size: sizeWidth / 14,
-          ),
-          onPressed: () {
-            Navigator.of(context).pop(context);
-          },
-        ),
-      ),
-      body: Container(
-        color: Colors.white,
-        child: StreamBuilder(
-          stream: Firestore.instance
-              .collection('requests')
-              .where('id', isEqualTo: widget.roomID)
-              .snapshots(),
-          builder:
-              (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-            if (!snapshot.hasData) {
-              return Container(
-                child: Center(
-                  child: CircularProgressIndicator(),
+                  onPressed: () {
+                    Navigator.of(context).pop(context);
+                  },
                 ),
-              );
-            }
-
-            String id1 = snapshot.data.documents[0]['idSend'];
-            String id2 = snapshot.data.documents[0]['idReceive'];
-
-            String idReceive;
-
-            id1 == user.uid ? idReceive = id2 : idReceive = id1;
-
-            return Column(
-              children: <Widget>[
-                Expanded(
-                  child: FadeAnimation(
-                    1.0,
-                    Container(
-                      alignment: Alignment.topCenter,
-                      padding: const EdgeInsets.only(
-                          left: 10.0, right: 4.0, bottom: 8.0),
-                      child: StreamBuilder(
-                        stream: Firestore.instance
-                            .collection('inboxs')
-                            .where('id', isEqualTo: widget.roomID)
-                            .orderBy('publishAt', descending: true)
-                            .snapshots(),
-                        builder: (BuildContext context,
-                            AsyncSnapshot<QuerySnapshot> snapshot) {
-                          if (!snapshot.hasData) {
-                            return Container(
-                              child: Center(
-                                child: CircularProgressIndicator(),
-                              ),
-                            );
-                          }
-
-                          return ListView.builder(
-                            padding: const EdgeInsets.all(0.0),
-                            itemCount: snapshot.data.documents.length,
-                            controller: _scrollController,
-                            reverse: true,
-                            shrinkWrap: true,
-                            itemBuilder: (context, index) {
-                              return BuildChatLine(
-                                message: snapshot.data.documents[index]
-                                    ['message'],
-                                isMe: snapshot.data.documents[index]
-                                            ['idSend'] ==
-                                        user.uid
-                                    ? true
-                                    : false,
-                                type: snapshot.data.documents[index]['type'],
-                                name: widget.name,
-                                seen: snapshot.data.documents[index]['seen'] ==
-                                        null
-                                    ? true
-                                    : snapshot.data.documents[index]['seen'],
-                                index: snapshot.data.documents[index].reference,
-                                isLast: index == 0 ? true : false,
-                                idUser: snapshot.data.documents[index]
-                                    ['receiveID'],
-                                publishAt: snapshot.data.documents[index]
-                                    ['publishAt'],
-                                color: 414141,
-                              );
-                            },
-                          );
-                        },
+                SizedBox(
+                  width: 24.0,
+                ),
+                RichText(
+                  overflow: TextOverflow.visible,
+                  text: TextSpan(children: [
+                    TextSpan(
+                      text: 'Responce\t\t=\t\t',
+                      style: TextStyle(
+                        fontSize: size.width / 21.5,
+                        color: Colors.grey.shade800,
+                        fontWeight: FontWeight.bold,
                       ),
                     ),
-                  ),
-                ),
-                InputBottom(
-                  request: widget.request,
-                  idReceive: widget.idReceive,
-                  idRoom: widget.roomID,
-                  index: widget.index,
-                  available: widget.available,
+                    TextSpan(
+                      text: widget.responce,
+                      style: TextStyle(
+                        fontSize: size.width / 23.5,
+                        color: _color,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ]),
                 ),
               ],
-            );
-          },
-        ),
+            ),
+          ),
+          Divider(
+            height: .8,
+            thickness: .8,
+            color: Colors.grey.shade200,
+          ),
+          Container(
+            height: size.height * .35,
+            width: size.width,
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                image: widget.urlToImage == ''
+                    ? AssetImage(
+                        'images/avt.jpg',
+                      )
+                    : NetworkImage(
+                        widget.urlToImage,
+                      ),
+                fit: BoxFit.cover,
+              ),
+            ),
+          ),
+          SizedBox(
+            height: 20.0,
+          ),
+          Padding(
+            padding: EdgeInsets.symmetric(
+              horizontal: 20.0,
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                RichText(
+                  overflow: TextOverflow.visible,
+                  text: TextSpan(children: [
+                    TextSpan(
+                      text: 'Responce\t\t=\t\t',
+                      style: TextStyle(
+                        fontSize: size.width / 22.5,
+                        color: Colors.grey.shade800,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    TextSpan(
+                      text: widget.responce,
+                      style: TextStyle(
+                        fontSize: size.width / 23.5,
+                        color: _color,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ]),
+                ),
+                SizedBox(
+                  height: 12.0,
+                ),
+                RichText(
+                  overflow: TextOverflow.visible,
+                  text: TextSpan(children: [
+                    TextSpan(
+                      text: 'Responced Time\t:\t\t',
+                      style: TextStyle(
+                        fontSize: size.width / 22.5,
+                        color: Colors.grey.shade800,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    TextSpan(
+                      text:
+                          '$_hour - ${responcedTime.day}/${responcedTime.month}/${responcedTime.year}',
+                      style: TextStyle(
+                        fontSize: size.width / 23.5,
+                        color: Colors.grey.shade800,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ]),
+                ),
+                SizedBox(
+                  height: 12.0,
+                ),
+                RichText(
+                  overflow: TextOverflow.visible,
+                  text: TextSpan(children: [
+                    TextSpan(
+                      text: 'PublishAt\t:\t\t',
+                      style: TextStyle(
+                        fontSize: size.width / 22.5,
+                        color: Colors.grey.shade800,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    TextSpan(
+                      text:
+                          '$_hour - ${responcedTime.day}/${responcedTime.month}/${responcedTime.year}',
+                      style: TextStyle(
+                        fontSize: size.width / 23.5,
+                        color: Colors.grey.shade600,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ]),
+                ),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }

@@ -69,7 +69,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
             if (!snapshot.hasData) {
               return IconButton(
                 icon: Icon(
-                  Feather.check,
+                  Feather.refresh_cw,
                   size: sizeWidth / 14.5,
                   color: Colors.blueAccent,
                 ),
@@ -82,7 +82,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
 
             return IconButton(
               icon: Icon(
-                Feather.check,
+                Feather.refresh_cw,
                 size: sizeWidth / 14.5,
                 color: Colors.blueAccent,
               ),

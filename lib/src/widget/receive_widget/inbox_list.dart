@@ -31,7 +31,7 @@ class _InboxListState extends State<InboxList> {
         String responce = widget.documents[index]['responce'];
 
         return InboxCard(
-          lastMessage: responce.length == 0 ? '[\"Image\"]' : responce,
+          responce: responce.length == 0 ? '[\"Image\"]' : responce,
           publishAt: widget.documents[index]['responcedTime'],
           roomID: room,
           uid: widget.documents[index]['idSend'],
@@ -40,6 +40,7 @@ class _InboxListState extends State<InboxList> {
           request: widget.documents[index]['idSend'] == user.uid ? true : false,
           index: widget.documents[index].reference,
           completed: widget.documents[index]['completed'],
+          doc: widget.documents[index],
         );
       },
     );

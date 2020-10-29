@@ -38,24 +38,28 @@ class _ReceivePageState extends State<ReceivePage> {
 
                 String urlToImage = snapshot.data.documents[0]['urlToImage'];
 
-                return CircleAvatar(
-                  backgroundImage: urlToImage == ''
-                      ? AssetImage('images/avt.jpg')
-                      : NetworkImage(urlToImage),
-                  radius: 16.0,
+                return Row(
+                  children: [
+                    CircleAvatar(
+                      backgroundImage: urlToImage == ''
+                          ? AssetImage('images/avt.jpg')
+                          : NetworkImage(urlToImage),
+                      radius: 16.0,
+                    ),
+                    SizedBox(
+                      width: 6.0,
+                    ),
+                    Text(
+                      "History",
+                      style: TextStyle(
+                        fontSize: size.width / 18.0,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black,
+                      ),
+                    ),
+                  ],
                 );
               },
-            ),
-            SizedBox(
-              width: 4.0,
-            ),
-            Text(
-              "\tReceive",
-              style: TextStyle(
-                fontSize: size.width / 18.0,
-                fontWeight: FontWeight.bold,
-                color: Colors.black,
-              ),
             ),
           ],
         ),

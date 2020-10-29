@@ -5,7 +5,7 @@ import 'package:flutter_icons/flutter_icons.dart';
 import 'package:project_message_demo/src/page/receive_page/room_page.dart';
 
 class InboxCard extends StatelessWidget {
-  final String lastMessage;
+  final String responce;
   final Timestamp publishAt;
   final String uid;
   final String roomID;
@@ -14,10 +14,11 @@ class InboxCard extends StatelessWidget {
   final bool request;
   final bool completed;
   final index;
+  final DocumentSnapshot doc;
 
   InboxCard({
     this.uid,
-    this.lastMessage,
+    this.responce,
     this.publishAt,
     this.roomID,
     this.isMe,
@@ -25,6 +26,7 @@ class InboxCard extends StatelessWidget {
     this.request,
     this.index,
     this.completed,
+    this.doc,
   });
 
   @override
@@ -34,7 +36,7 @@ class InboxCard extends StatelessWidget {
     String time = '';
     String lastMes;
 
-    lastMes = lastMessage.replaceAll('''\n''', ' ');
+    lastMes = responce.replaceAll('''\n''', ' ');
     lastMes = lastMes.length > 23 ? lastMes.substring(0, 20) + '...' : lastMes;
 
     Color parseColor(String color) {
@@ -56,6 +58,23 @@ class InboxCard extends StatelessWidget {
       time = '$hour:0$min';
     } else {
       time = '$hour:$min';
+    }
+
+    void showHistoryBottomSheet() {
+      showModalBottomSheet(
+          isScrollControlled: true,
+          context: context,
+          builder: (context) {
+            return ChatRoomPage(
+              urlToImage: doc['urlToImage'],
+              idRequest: doc['id'],
+              idSend: doc['idSend'],
+              idReceive: doc['idReceive'],
+              publishAt: doc['publishAt'],
+              responcedTime: doc['responcedTime'],
+              responce: doc['responce'],
+            );
+          });
     }
 
     final double sizeWidth = MediaQuery.of(context).size.width;
@@ -142,21 +161,7 @@ class InboxCard extends StatelessWidget {
 
         return GestureDetector(
           onTap: () {
-            Navigator.of(context).push(MaterialPageRoute(
-                builder: (context) => ChatRoomPage(
-                      name: username,
-                      roomID: roomID,
-                      request: request,
-                      index: index,
-                      idReceive: uid,
-                      available: completed
-                          ? false
-                          : request && lastMessage == '[\"Image\"]'
-                              ? true
-                              : request == false && lastMessage != '[\"Image\"]'
-                                  ? true
-                                  : false,
-                    )));
+            showHistoryBottomSheet();
           },
           child: Container(
             padding: EdgeInsets.symmetric(horizontal: 12.0, vertical: 6.5),
