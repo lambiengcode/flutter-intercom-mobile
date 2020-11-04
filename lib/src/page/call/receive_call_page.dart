@@ -71,46 +71,61 @@ class _ReceiveCallPageState extends State<ReceiveCallPage> {
                 return Column(
                   children: [
                     Text(
-                      'Calling...',
+                      'Incoming Call',
                       style: TextStyle(
-                        color: Colors.green.shade600,
-                        fontSize: size.width / 18.0,
+                        color: Colors.green.shade700,
+                        fontSize: size.width / 18.4,
                         fontWeight: FontWeight.w400,
                       ),
                     ),
                     SizedBox(
-                      height: 20.0,
+                      height: size.height * .08,
                     ),
                     Container(
                       height: size.height * .18,
                       width: size.height * .18,
                       decoration: BoxDecoration(
-                        borderRadius: BorderRadius.all(Radius.circular(
-                          20.0,
-                        )),
-                        image: DecorationImage(
-                          image: snapshot.data.documents[0]['urlToImage'] == ''
-                              ? AssetImage('images/avt.jpg')
-                              : NetworkImage(
-                                  snapshot.data.documents[0]['urlToImage'],
-                                ),
-                          fit: BoxFit.cover,
+                        border: Border.all(
+                          color: Colors.grey.shade400,
+                          width: .8,
+                        ),
+                        borderRadius: BorderRadius.all(Radius.circular(30.0)),
+                      ),
+                      alignment: Alignment.center,
+                      child: Container(
+                        height: size.height * .145,
+                        width: size.height * .145,
+                        decoration: BoxDecoration(
+                          border: Border.all(
+                            color: Colors.grey.shade400,
+                            width: 1.0,
+                          ),
+                          borderRadius: BorderRadius.all(Radius.circular(20.0)),
+                          image: DecorationImage(
+                            image: snapshot.data.documents[0]['urlToImage'] ==
+                                    ''
+                                ? AssetImage('images/avt.jpg')
+                                : NetworkImage(
+                                    snapshot.data.documents[0]['urlToImage'],
+                                  ),
+                            fit: BoxFit.cover,
+                          ),
                         ),
                       ),
                     ),
                     SizedBox(
-                      height: 20.0,
+                      height: 24.0,
                     ),
                     Text(
                       snapshot.data.documents[0]['username'],
                       style: TextStyle(
-                        color: Colors.redAccent,
-                        fontSize: size.width / 16.0,
-                        fontWeight: FontWeight.bold,
+                        color: Colors.blueAccent,
+                        fontSize: size.width / 16.8,
+                        fontWeight: FontWeight.w600,
                       ),
                     ),
                     SizedBox(
-                      height: size.height * .32,
+                      height: size.height * .24,
                     ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,

@@ -49,5 +49,7 @@
 	<string>$(PRODUCT_NAME) Microphone Usage!</string>
 	<key>FirebaseAppDelegateProxyEnabled</key>
 	<false/>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string> photos description.</string>
 </dict>
 </plist>

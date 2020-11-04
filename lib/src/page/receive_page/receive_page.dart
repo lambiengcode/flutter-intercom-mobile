@@ -45,9 +45,9 @@ class _ReceivePageState extends State<ReceivePage> {
                         backgroundImage: urlToImage == ''
                             ? AssetImage('images/avt.jpg')
                             : NetworkImage(urlToImage),
-                        radius: 16.8),
+                        radius: 16.96),
                     SizedBox(
-                      width: 6.0,
+                      width: 6.8,
                     ),
                     Text(
                       "History",

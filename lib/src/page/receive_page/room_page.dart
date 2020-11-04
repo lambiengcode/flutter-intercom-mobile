@@ -30,9 +30,17 @@ class ChatRoomPage extends StatefulWidget {
 class _ChatRoomPageState extends State<ChatRoomPage> {
   DateTime responcedTime;
   DateTime publishAt;
-  String _hour;
-  String _hourPublishAt;
+  String _publish;
+  String _responced;
   Color _color;
+
+  String checkDate(int input) {
+    if (input < 10) {
+      return '0$input';
+    } else {
+      return '$input';
+    }
+  }
 
   @override
   void initState() {
@@ -47,33 +55,13 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
                 ? Colors.redAccent
                 : Colors.amber.shade700;
 
-    if (responcedTime.hour < 10 && responcedTime.minute < 10) {
-      _hour =
-          '0${responcedTime.hour}:0${responcedTime.minute}:${responcedTime.second}';
-    } else if (responcedTime.hour < 10) {
-      _hour =
-          '0${responcedTime.hour}:${responcedTime.minute}:${responcedTime.second}';
-    } else if (responcedTime.minute < 10) {
-      _hour =
-          '${responcedTime.hour}:0${responcedTime.minute}:${responcedTime.second}';
-    } else {
-      _hour =
-          '${responcedTime.hour}:${responcedTime.minute}:${responcedTime.second}';
-    }
+    _publish =
+        '${checkDate(publishAt.hour)}:${checkDate(publishAt.minute)}:${checkDate(publishAt.second)} at ' +
+            '${checkDate(publishAt.day)}/${checkDate(publishAt.month)}/${checkDate(publishAt.year)}';
 
-    if (publishAt.hour < 10 && publishAt.minute < 10) {
-      _hourPublishAt =
-          '0${publishAt.hour}:0${publishAt.minute}:${publishAt.second}';
-    } else if (publishAt.hour < 10) {
-      _hourPublishAt =
-          '0${publishAt.hour}:${publishAt.minute}:${publishAt.second}';
-    } else if (responcedTime.minute < 10) {
-      _hourPublishAt =
-          '${publishAt.hour}:0${publishAt.minute}:${publishAt.second}';
-    } else {
-      _hourPublishAt =
-          '${publishAt.hour}:${publishAt.minute}:${publishAt.second}';
-    }
+    _responced =
+        '${checkDate(responcedTime.hour)}:${checkDate(responcedTime.minute)}:${checkDate(responcedTime.second)} at ' +
+            '${checkDate(responcedTime.day)}/${checkDate(responcedTime.month)}/${checkDate(responcedTime.year)}';
   }
 
   @override
@@ -92,31 +80,45 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 SizedBox(
-                  width: 12.0,
+                  width: 8.0,
                 ),
                 IconButton(
                   icon: Icon(
-                    Feather.minimize_2,
+                    Feather.arrow_left,
                     color: Colors.grey.shade700,
-                    size: size.width / 18.0,
+                    size: size.width / 16.0,
                   ),
                   onPressed: () {
                     Navigator.of(context).pop(context);
                   },
                 ),
                 SizedBox(
-                  width: 16.0,
+                  width: 24.0,
                 ),
                 Padding(
-                  padding: EdgeInsets.only(top: 5.0),
+                  padding: EdgeInsets.only(top: 2.0),
                   child: Text(
-                    'Details',
+                    'State :',
                     style: TextStyle(
-                      fontSize: size.width / 20.0,
-                      color: Colors.grey.shade900,
+                      fontSize: size.width / 20.2,
+                      color: Colors.grey.shade800,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
+                ),
+                SizedBox(
+                  width: 20.0,
+                ),
+                Icon(
+                  widget.responce == 'Accept'
+                      ? Icons.check
+                      : widget.responce == 'Reject'
+                          ? Icons.close
+                          : widget.responce == 'Missing'
+                              ? Icons.call_missed
+                              : Icons.call_end,
+                  color: _color,
+                  size: size.width / 16.0,
                 ),
               ],
             ),
@@ -156,9 +158,9 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
                   overflow: TextOverflow.visible,
                   text: TextSpan(children: [
                     TextSpan(
-                      text: 'Responce\t\t=\t\t',
+                      text: 'Responce\t\t:\t\t',
                       style: TextStyle(
-                        fontSize: size.width / 22.5,
+                        fontSize: size.width / 24.0,
                         color: Colors.grey.shade800,
                         fontWeight: FontWeight.bold,
                       ),
@@ -166,7 +168,7 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
                     TextSpan(
                       text: widget.responce,
                       style: TextStyle(
-                        fontSize: size.width / 23.5,
+                        fontSize: size.width / 24.0,
                         color: _color,
                         fontWeight: FontWeight.w600,
                       ),
@@ -180,18 +182,17 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
                   overflow: TextOverflow.visible,
                   text: TextSpan(children: [
                     TextSpan(
-                      text: 'Responced Time\t:\t\t',
+                      text: 'Responced Time\t:\t',
                       style: TextStyle(
-                        fontSize: size.width / 22.5,
+                        fontSize: size.width / 24.0,
                         color: Colors.grey.shade800,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
                     TextSpan(
-                      text:
-                          '$_hour - ${responcedTime.day}/${responcedTime.month}/${responcedTime.year}',
+                      text: _responced,
                       style: TextStyle(
-                        fontSize: size.width / 23.5,
+                        fontSize: size.width / 24.0,
                         color: Colors.grey.shade800,
                         fontWeight: FontWeight.w600,
                       ),
@@ -205,18 +206,17 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
                   overflow: TextOverflow.visible,
                   text: TextSpan(children: [
                     TextSpan(
-                      text: 'PublishAt\t:\t\t',
+                      text: 'PublishAt\t:\t',
                       style: TextStyle(
-                        fontSize: size.width / 22.5,
+                        fontSize: size.width / 24.0,
                         color: Colors.grey.shade800,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
                     TextSpan(
-                      text:
-                          '$_hourPublishAt - ${publishAt.day}/${publishAt.month}/${publishAt.year}',
+                      text: _publish,
                       style: TextStyle(
-                        fontSize: size.width / 23.5,
+                        fontSize: size.width / 24.0,
                         color: Colors.grey.shade700,
                         fontWeight: FontWeight.w600,
                       ),

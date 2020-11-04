@@ -197,6 +197,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.1.1+2"
+  firebase_database:
+    dependency: "direct main"
+    description:
+      name: firebase_database
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "3.1.6"
   firebase_messaging:
     dependency: "direct main"
     description:
@@ -244,13 +251,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.0.11"
-  flutter_statusbarcolor:
-    dependency: "direct main"
-    description:
-      name: flutter_statusbarcolor
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.2.3"
   flutter_test:
     dependency: "direct dev"
     description: flutter
@@ -261,6 +261,13 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  flutter_webrtc:
+    dependency: "direct main"
+    description:
+      name: flutter_webrtc
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.2.8"
   http:
     dependency: transitive
     description:
@@ -429,6 +436,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.24.1"
+  sdp_transform:
+    dependency: "direct main"
+    description:
+      name: sdp_transform
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.2.0"
   simple_animations:
     dependency: "direct main"
     description:
