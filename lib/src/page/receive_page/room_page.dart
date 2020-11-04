@@ -2,8 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:project_message_demo/src/model/user.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_icons/flutter_icons.dart';
 
 class ChatRoomPage extends StatefulWidget {
   final String idRequest;
@@ -30,13 +29,16 @@ class ChatRoomPage extends StatefulWidget {
 
 class _ChatRoomPageState extends State<ChatRoomPage> {
   DateTime responcedTime;
+  DateTime publishAt;
   String _hour;
+  String _hourPublishAt;
   Color _color;
 
   @override
   void initState() {
     super.initState();
     responcedTime = widget.responcedTime.toDate();
+    publishAt = widget.publishAt.toDate();
     _color = widget.responce == 'Accept'
         ? Colors.green
         : widget.responce == 'Reject'
@@ -46,13 +48,31 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
                 : Colors.amber.shade700;
 
     if (responcedTime.hour < 10 && responcedTime.minute < 10) {
-      _hour = '0${responcedTime.hour}:0${responcedTime.minute}';
+      _hour =
+          '0${responcedTime.hour}:0${responcedTime.minute}:${responcedTime.second}';
     } else if (responcedTime.hour < 10) {
-      _hour = '0${responcedTime.hour}:${responcedTime.minute}';
+      _hour =
+          '0${responcedTime.hour}:${responcedTime.minute}:${responcedTime.second}';
     } else if (responcedTime.minute < 10) {
-      _hour = '${responcedTime.hour}:0${responcedTime.minute}';
+      _hour =
+          '${responcedTime.hour}:0${responcedTime.minute}:${responcedTime.second}';
     } else {
-      _hour = '${responcedTime.hour}:${responcedTime.minute}';
+      _hour =
+          '${responcedTime.hour}:${responcedTime.minute}:${responcedTime.second}';
+    }
+
+    if (publishAt.hour < 10 && publishAt.minute < 10) {
+      _hourPublishAt =
+          '0${publishAt.hour}:0${publishAt.minute}:${publishAt.second}';
+    } else if (publishAt.hour < 10) {
+      _hourPublishAt =
+          '0${publishAt.hour}:${publishAt.minute}:${publishAt.second}';
+    } else if (responcedTime.minute < 10) {
+      _hourPublishAt =
+          '${publishAt.hour}:0${publishAt.minute}:${publishAt.second}';
+    } else {
+      _hourPublishAt =
+          '${publishAt.hour}:${publishAt.minute}:${publishAt.second}';
     }
   }
 
@@ -66,43 +86,37 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
-            height: 52.0,
+            height: 60.0,
             width: size.width,
             child: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
+                SizedBox(
+                  width: 12.0,
+                ),
                 IconButton(
                   icon: Icon(
-                    Icons.close,
+                    Feather.minimize_2,
                     color: Colors.grey.shade700,
-                    size: size.width / 14.0,
+                    size: size.width / 18.0,
                   ),
                   onPressed: () {
                     Navigator.of(context).pop(context);
                   },
                 ),
                 SizedBox(
-                  width: 24.0,
+                  width: 16.0,
                 ),
-                RichText(
-                  overflow: TextOverflow.visible,
-                  text: TextSpan(children: [
-                    TextSpan(
-                      text: 'Responce\t\t=\t\t',
-                      style: TextStyle(
-                        fontSize: size.width / 21.5,
-                        color: Colors.grey.shade800,
-                        fontWeight: FontWeight.bold,
-                      ),
+                Padding(
+                  padding: EdgeInsets.only(top: 5.0),
+                  child: Text(
+                    'Details',
+                    style: TextStyle(
+                      fontSize: size.width / 20.0,
+                      color: Colors.grey.shade900,
+                      fontWeight: FontWeight.bold,
                     ),
-                    TextSpan(
-                      text: widget.responce,
-                      style: TextStyle(
-                        fontSize: size.width / 23.5,
-                        color: _color,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  ]),
+                  ),
                 ),
               ],
             ),
@@ -200,10 +214,10 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
                     ),
                     TextSpan(
                       text:
-                          '$_hour - ${responcedTime.day}/${responcedTime.month}/${responcedTime.year}',
+                          '$_hourPublishAt - ${publishAt.day}/${publishAt.month}/${publishAt.year}',
                       style: TextStyle(
                         fontSize: size.width / 23.5,
-                        color: Colors.grey.shade600,
+                        color: Colors.grey.shade700,
                         fontWeight: FontWeight.w600,
                       ),
                     ),

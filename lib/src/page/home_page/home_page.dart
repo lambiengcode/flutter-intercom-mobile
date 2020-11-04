@@ -7,7 +7,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:project_message_demo/src/page/receive_page/receive_page.dart';
-import 'package:project_message_demo/src/page/request_page.dart/request_page.dart';
 import 'package:project_message_demo/src/page/user/profile_page.dart';
 
 class HomePage extends StatefulWidget {
@@ -18,13 +17,6 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
-  int currentPage = 0;
-
-  var _pages = [
-    ReceivePage(),
-    EditProfilePage(),
-  ];
-
   final Firestore _db = Firestore.instance;
   final FirebaseMessaging _fcm = FirebaseMessaging();
   StreamSubscription iosSubscription;
@@ -105,32 +97,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      extendBody: true,
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: currentPage,
-        onTap: (i) {
-          setState(() {
-            currentPage = i;
-          });
-        },
-        elevation: 2.5,
-        type: BottomNavigationBarType.fixed,
-        showSelectedLabels: false,
-        showUnselectedLabels: false,
-        selectedItemColor: Colors.blueAccent,
-        unselectedItemColor: Colors.grey.shade800,
-        iconSize: 24.0,
-        items: [
-          BottomNavigationBarItem(
-              icon: Icon(Feather.mail), title: Text("Receive")),
-          BottomNavigationBarItem(
-              icon: Icon(Feather.user), title: Text("User")),
-        ],
-      ),
-      body: Padding(
-        padding: EdgeInsets.only(bottom: 60.0),
-        child: _pages[currentPage],
-      ),
+      body: ReceivePage(),
     );
   }
 }

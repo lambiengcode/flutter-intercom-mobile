@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:project_message_demo/src/animation/fade_animation.dart';
 import 'package:project_message_demo/src/model/user.dart';
+import 'package:project_message_demo/src/page/user/profile_page.dart';
 import 'package:project_message_demo/src/widget/receive_widget/inbox_list.dart';
 import 'package:provider/provider.dart';
 
@@ -41,18 +42,17 @@ class _ReceivePageState extends State<ReceivePage> {
                 return Row(
                   children: [
                     CircleAvatar(
-                      backgroundImage: urlToImage == ''
-                          ? AssetImage('images/avt.jpg')
-                          : NetworkImage(urlToImage),
-                      radius: 16.0,
-                    ),
+                        backgroundImage: urlToImage == ''
+                            ? AssetImage('images/avt.jpg')
+                            : NetworkImage(urlToImage),
+                        radius: 16.8),
                     SizedBox(
                       width: 6.0,
                     ),
                     Text(
                       "History",
                       style: TextStyle(
-                        fontSize: size.width / 18.0,
+                        fontSize: size.width / 18.25,
                         fontWeight: FontWeight.bold,
                         color: Colors.black,
                       ),
@@ -71,6 +71,20 @@ class _ReceivePageState extends State<ReceivePage> {
               color: Colors.grey.shade800,
             ),
             onPressed: () {},
+          ),
+          SizedBox(
+            width: 4.0,
+          ),
+          IconButton(
+            icon: Icon(
+              Feather.settings,
+              size: size.width / 16.0,
+              color: Colors.grey.shade800,
+            ),
+            onPressed: () {
+              Navigator.of(context).push(
+                  MaterialPageRoute(builder: (context) => EditProfilePage()));
+            },
           ),
           SizedBox(
             width: 4.0,

@@ -59,38 +59,14 @@ class _EditProfilePageState extends State<EditProfilePage> {
         elevation: 1.5,
         backgroundColor: Colors.white,
         centerTitle: true,
-        leading: StreamBuilder(
-          stream: Firestore.instance
-              .collection('users')
-              .where('id', isEqualTo: user.uid)
-              .snapshots(),
-          builder:
-              (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-            if (!snapshot.hasData) {
-              return IconButton(
-                icon: Icon(
-                  Feather.refresh_cw,
-                  size: sizeWidth / 14.5,
-                  color: Colors.blueAccent,
-                ),
-                onPressed: () {},
-              );
-            }
-
-            String username = snapshot.data.documents[0]['username'];
-            String urlToImage = snapshot.data.documents[0]['urlToImage'];
-
-            return IconButton(
-              icon: Icon(
-                Feather.refresh_cw,
-                size: sizeWidth / 14.5,
-                color: Colors.blueAccent,
-              ),
-              onPressed: () async {
-                await _updateProfile(snapshot.data.documents[0].reference,
-                    username, urlToImage, user.uid);
-              },
-            );
+        leading: IconButton(
+          icon: Icon(
+            Feather.arrow_left,
+            color: Colors.grey.shade800,
+            size: sizeWidth / 14.5,
+          ),
+          onPressed: () {
+            Navigator.of(context).pop(context);
           },
         ),
         title: Text(
@@ -103,15 +79,38 @@ class _EditProfilePageState extends State<EditProfilePage> {
           ),
         ),
         actions: <Widget>[
-          IconButton(
-            icon: Icon(
-              Feather.log_out,
-              size: sizeWidth / 14.5,
-              color: Colors.grey.shade800,
-            ),
-            onPressed: () async {
-              AuthService _auth = AuthService();
-              await _auth.signOut();
+          StreamBuilder(
+            stream: Firestore.instance
+                .collection('users')
+                .where('id', isEqualTo: user.uid)
+                .snapshots(),
+            builder:
+                (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+              if (!snapshot.hasData) {
+                return IconButton(
+                  icon: Icon(
+                    Feather.refresh_cw,
+                    size: sizeWidth / 14.5,
+                    color: Colors.blueAccent,
+                  ),
+                  onPressed: () {},
+                );
+              }
+
+              String username = snapshot.data.documents[0]['username'];
+              String urlToImage = snapshot.data.documents[0]['urlToImage'];
+
+              return IconButton(
+                icon: Icon(
+                  Feather.check,
+                  size: sizeWidth / 14.5,
+                  color: Colors.blueAccent,
+                ),
+                onPressed: () async {
+                  await _updateProfile(snapshot.data.documents[0].reference,
+                      username, urlToImage, user.uid);
+                },
+              );
             },
           ),
         ],
@@ -277,6 +276,30 @@ class _EditProfilePageState extends State<EditProfilePage> {
                 ),
                 SizedBox(
                   height: 40.0,
+                ),
+                GestureDetector(
+                  onTap: () async {
+                    AuthService _auth = AuthService();
+                    Navigator.of(context).pop(context);
+                    await _auth.signOut();
+                  },
+                  child: Container(
+                    margin: EdgeInsets.symmetric(horizontal: 20.0),
+                    height: 55.0,
+                    decoration: BoxDecoration(
+                      color: Colors.blueAccent,
+                      borderRadius: BorderRadius.all(Radius.circular(4.0)),
+                    ),
+                    alignment: Alignment.center,
+                    child: Text(
+                      'SignOut',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: sizeWidth / 25.5,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
                 ),
               ],
             );
