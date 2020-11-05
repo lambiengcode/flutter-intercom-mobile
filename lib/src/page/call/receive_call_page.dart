@@ -20,7 +20,7 @@ class _ReceiveCallPageState extends State<ReceiveCallPage> {
       await transaction.update(widget.index, {
         'request': false,
         'completed': !accept,
-        'responce': accept == false ? 'Rejected Calls' : '',
+        'responce': accept == false ? 'Rejected Call' : '',
         'responcedTime': DateTime.now(),
       });
     });
@@ -90,26 +90,13 @@ class _ReceiveCallPageState extends State<ReceiveCallPage> {
                           width: .8,
                         ),
                         borderRadius: BorderRadius.all(Radius.circular(30.0)),
-                      ),
-                      alignment: Alignment.center,
-                      child: Container(
-                        height: size.height * .145,
-                        width: size.height * .145,
-                        decoration: BoxDecoration(
-                          border: Border.all(
-                            color: Colors.grey.shade400,
-                            width: 1.0,
-                          ),
-                          borderRadius: BorderRadius.all(Radius.circular(20.0)),
-                          image: DecorationImage(
-                            image: snapshot.data.documents[0]['urlToImage'] ==
-                                    ''
-                                ? AssetImage('images/avt.jpg')
-                                : NetworkImage(
-                                    snapshot.data.documents[0]['urlToImage'],
-                                  ),
-                            fit: BoxFit.cover,
-                          ),
+                        image: DecorationImage(
+                          image: snapshot.data.documents[0]['urlToImage'] == ''
+                              ? AssetImage('images/avt.jpg')
+                              : NetworkImage(
+                                  snapshot.data.documents[0]['urlToImage'],
+                                ),
+                          fit: BoxFit.cover,
                         ),
                       ),
                     ),

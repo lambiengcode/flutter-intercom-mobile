@@ -13,6 +13,40 @@ class ReceivePage extends StatefulWidget {
 }
 
 class _ReceivePageState extends State<ReceivePage> {
+  DateTime _fromDate;
+  DateTime _toDate;
+  List<String> _states = [
+    'All',
+    'Accept',
+    'Reject',
+    'Missing',
+    'Rejected Call',
+  ];
+  String _state;
+
+  @override
+  void initState() {
+    super.initState();
+    _toDate = DateTime.now().subtract(Duration(days: 4));
+    _fromDate = _toDate.subtract(Duration(days: 14));
+    _state = _states[0];
+  }
+
+  void showFilterBottomSheet() {
+    showModalBottomSheet(
+      isScrollControlled: true,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.all(
+          Radius.circular(12.0),
+        ),
+      ),
+      context: context,
+      builder: (context) {
+        return _filterBottomSheet(context);
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -70,7 +104,9 @@ class _ReceivePageState extends State<ReceivePage> {
               size: size.width / 16.0,
               color: Colors.grey.shade800,
             ),
-            onPressed: () {},
+            onPressed: () {
+              showFilterBottomSheet();
+            },
           ),
           SizedBox(
             width: 4.0,
@@ -104,6 +140,8 @@ class _ReceivePageState extends State<ReceivePage> {
                 stream: Firestore.instance
                     .collection('requests')
                     .where('receiveID', isEqualTo: user.uid)
+                    .where('publishAt',
+                        isGreaterThanOrEqualTo: Timestamp.fromDate(_fromDate))
                     .snapshots(),
                 builder: (BuildContext context,
                     AsyncSnapshot<QuerySnapshot> snapshot) {
@@ -112,6 +150,14 @@ class _ReceivePageState extends State<ReceivePage> {
                   }
 
                   List<DocumentSnapshot> docs = snapshot.data.documents;
+
+                  for (int i = 0; i < docs.length - 1; i++) {
+                    Timestamp t1 = docs[i]['publishAt'];
+                    Timestamp t2 = Timestamp.fromDate(_toDate);
+                    if (t2.compareTo(t1) == -1) {
+                      docs.removeAt(i);
+                    }
+                  }
 
                   for (int i = 0; i < docs.length - 1; i++) {
                     for (int j = 0; j < docs.length - 1 - i; j++) {
@@ -136,6 +182,202 @@ class _ReceivePageState extends State<ReceivePage> {
             )
           ],
         ),
+      ),
+    );
+  }
+
+  Widget _filterBottomSheet(context) {
+    Size size = MediaQuery.of(context).size;
+    return Container(
+      height: size.height * .3,
+      child: Column(
+        children: [
+          SizedBox(
+            height: 28.0,
+          ),
+          Row(
+            children: [
+              SizedBox(
+                width: 20.0,
+              ),
+              Expanded(
+                flex: 1,
+                child: Text(
+                  'From',
+                  style: TextStyle(
+                    color: Colors.grey.shade800,
+                    fontSize: size.width / 23.5,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
+              Expanded(
+                flex: 5,
+                child: Container(
+                  padding: EdgeInsets.only(
+                    left: 18.0,
+                    right: 12.0,
+                    top: 12.0,
+                    bottom: 12.0,
+                  ),
+                  margin: EdgeInsets.symmetric(
+                    horizontal: 12.0,
+                    vertical: 8.0,
+                  ),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.all(Radius.circular(6.0)),
+                    color: Colors.grey.shade50,
+                    boxShadow: [
+                      BoxShadow(
+                        color: Color(0xFFABBAD5),
+                        spreadRadius: .8,
+                        blurRadius: 2.0,
+                        offset: Offset(0, 2.0), // changes position of shadow
+                      ),
+                    ],
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(''),
+                      Icon(
+                        Feather.calendar,
+                        size: size.width / 20,
+                        color: Colors.grey.shade700,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+          Row(
+            children: [
+              SizedBox(
+                width: 20.0,
+              ),
+              Expanded(
+                flex: 1,
+                child: Text(
+                  'To',
+                  style: TextStyle(
+                    color: Colors.grey.shade800,
+                    fontSize: size.width / 23.5,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
+              Expanded(
+                flex: 5,
+                child: Container(
+                  padding: EdgeInsets.only(
+                    left: 18.0,
+                    right: 12.0,
+                    top: 12.0,
+                    bottom: 12.0,
+                  ),
+                  margin: EdgeInsets.symmetric(
+                    horizontal: 12.0,
+                    vertical: 8.0,
+                  ),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.all(Radius.circular(6.0)),
+                    color: Colors.grey.shade50,
+                    boxShadow: [
+                      BoxShadow(
+                        color: Color(0xFFABBAD5),
+                        spreadRadius: .8,
+                        blurRadius: 2.0,
+                        offset: Offset(0, 2.0), // changes position of shadow
+                      ),
+                    ],
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(''),
+                      Icon(
+                        Feather.calendar,
+                        size: size.width / 20,
+                        color: Colors.grey.shade700,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+          Row(
+            children: [
+              SizedBox(
+                width: 20.0,
+              ),
+              Expanded(
+                flex: 1,
+                child: Text(
+                  'State',
+                  style: TextStyle(
+                    color: Colors.grey.shade800,
+                    fontSize: size.width / 22.5,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
+              Expanded(
+                flex: 5,
+                child: Container(
+                  padding: EdgeInsets.only(left: 18.0, right: 12.0),
+                  margin: EdgeInsets.symmetric(
+                    horizontal: 12.0,
+                    vertical: 8.0,
+                  ),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.all(Radius.circular(6.0)),
+                    color: Colors.grey.shade50,
+                    boxShadow: [
+                      BoxShadow(
+                        color: Color(0xFFABBAD5),
+                        spreadRadius: .8,
+                        blurRadius: 2.0,
+                        offset: Offset(0, 2.0), // changes position of shadow
+                      ),
+                    ],
+                  ),
+                  child: DropdownButtonHideUnderline(
+                    child: DropdownButtonFormField(
+                      icon: Icon(
+                        Feather.hash,
+                        size: size.width / 20,
+                        color: Colors.grey.shade700,
+                      ),
+                      iconEnabledColor: Colors.grey.shade800,
+                      decoration: InputDecoration(
+                        border: InputBorder.none,
+                      ),
+                      value: _state,
+                      items: _states.map((state) {
+                        return DropdownMenuItem(
+                            value: state,
+                            child: Text(
+                              state,
+                              style: TextStyle(
+                                fontSize: size.width / 24,
+                                color: Colors.grey.shade800,
+                              ),
+                            ));
+                      }).toList(),
+                      onChanged: (val) {
+                        setState(() {
+                          _state = val;
+                        });
+                      },
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ],
       ),
     );
   }
