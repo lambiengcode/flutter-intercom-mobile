@@ -6,6 +6,7 @@ import 'package:project_message_demo/src/model/user.dart';
 import 'package:project_message_demo/src/page/user/profile_page.dart';
 import 'package:project_message_demo/src/widget/receive_widget/inbox_list.dart';
 import 'package:provider/provider.dart';
+import 'package:intl/intl.dart';
 
 class ReceivePage extends StatefulWidget {
   @override
@@ -23,13 +24,52 @@ class _ReceivePageState extends State<ReceivePage> {
     'Rejected Call',
   ];
   String _state;
+  String _from;
+  String _to;
 
   @override
   void initState() {
     super.initState();
-    _toDate = DateTime.now().subtract(Duration(days: 4));
+    _toDate = DateTime.now();
     _fromDate = _toDate.subtract(Duration(days: 14));
+    _from = DateFormat('dd/MM/yyyy').format(_fromDate);
+    _to = DateFormat('dd/MM/yyyy').format(_toDate);
     _state = _states[0];
+  }
+
+  Future<void> _selectDateFrom(BuildContext context) async {
+    final DateTime picked = await showDatePicker(
+        context: context,
+        initialDate: _fromDate,
+        firstDate: DateTime(2020, 10),
+        lastDate: DateTime.now());
+    if (picked != null &&
+        picked != _fromDate &&
+        _toDate.compareTo(_fromDate) != -1)
+      setState(() {
+        _fromDate = picked;
+        _from = DateFormat('dd/MM/yyyy').format(_fromDate);
+      });
+
+    Navigator.of(context).pop(context);
+    showFilterBottomSheet();
+  }
+
+  Future<void> _selectDateTo(BuildContext context) async {
+    final DateTime picked = await showDatePicker(
+        context: context,
+        initialDate: _toDate,
+        firstDate: DateTime(2020, 10),
+        lastDate: DateTime.now());
+    if (picked != null &&
+        picked != _toDate &&
+        _toDate.compareTo(_fromDate) != -1)
+      setState(() {
+        _toDate = picked;
+        _to = DateFormat('dd/MM/yyyy').format(_toDate);
+      });
+    Navigator.of(context).pop(context);
+    showFilterBottomSheet();
   }
 
   void showFilterBottomSheet() {
@@ -137,12 +177,16 @@ class _ReceivePageState extends State<ReceivePage> {
             ),
             Expanded(
               child: StreamBuilder(
-                stream: Firestore.instance
-                    .collection('requests')
-                    .where('receiveID', isEqualTo: user.uid)
-                    .where('publishAt',
-                        isGreaterThanOrEqualTo: Timestamp.fromDate(_fromDate))
-                    .snapshots(),
+                stream: _state == 'All'
+                    ? Firestore.instance
+                        .collection('requests')
+                        .where('receiveID', isEqualTo: user.uid)
+                        .snapshots()
+                    : Firestore.instance
+                        .collection('requests')
+                        .where('receiveID', isEqualTo: user.uid)
+                        .where('responce', isEqualTo: _state)
+                        .snapshots(),
                 builder: (BuildContext context,
                     AsyncSnapshot<QuerySnapshot> snapshot) {
                   if (!snapshot.hasData) {
@@ -153,8 +197,18 @@ class _ReceivePageState extends State<ReceivePage> {
 
                   for (int i = 0; i < docs.length - 1; i++) {
                     Timestamp t1 = docs[i]['publishAt'];
-                    Timestamp t2 = Timestamp.fromDate(_toDate);
-                    if (t2.compareTo(t1) == -1) {
+                    DateTime publishAt = t1.toDate();
+
+                    if (_fromDate.compareTo(publishAt) == 1) {
+                      docs.removeAt(i);
+                    }
+                  }
+
+                  for (int i = 0; i < docs.length - 1; i++) {
+                    Timestamp t1 = docs[i]['publishAt'];
+                    DateTime publishAt = t1.toDate();
+
+                    if (_toDate.compareTo(publishAt) == -1) {
                       docs.removeAt(i);
                     }
                   }
@@ -213,39 +267,51 @@ class _ReceivePageState extends State<ReceivePage> {
               ),
               Expanded(
                 flex: 5,
-                child: Container(
-                  padding: EdgeInsets.only(
-                    left: 18.0,
-                    right: 12.0,
-                    top: 12.0,
-                    bottom: 12.0,
-                  ),
-                  margin: EdgeInsets.symmetric(
-                    horizontal: 12.0,
-                    vertical: 8.0,
-                  ),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.all(Radius.circular(6.0)),
-                    color: Colors.grey.shade50,
-                    boxShadow: [
-                      BoxShadow(
-                        color: Color(0xFFABBAD5),
-                        spreadRadius: .8,
-                        blurRadius: 2.0,
-                        offset: Offset(0, 2.0), // changes position of shadow
-                      ),
-                    ],
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(''),
-                      Icon(
-                        Feather.calendar,
-                        size: size.width / 20,
-                        color: Colors.grey.shade700,
-                      ),
-                    ],
+                child: GestureDetector(
+                  onTap: () async {
+                    _selectDateFrom(context);
+                  },
+                  child: Container(
+                    padding: EdgeInsets.only(
+                      left: 18.0,
+                      right: 12.0,
+                      top: 12.0,
+                      bottom: 12.0,
+                    ),
+                    margin: EdgeInsets.symmetric(
+                      horizontal: 12.0,
+                      vertical: 8.0,
+                    ),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.all(Radius.circular(6.0)),
+                      color: Colors.grey.shade50,
+                      boxShadow: [
+                        BoxShadow(
+                          color: Color(0xFFABBAD5),
+                          spreadRadius: .8,
+                          blurRadius: 2.0,
+                          offset: Offset(0, 2.0), // changes position of shadow
+                        ),
+                      ],
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          _from,
+                          style: TextStyle(
+                            color: Colors.grey.shade800,
+                            fontSize: size.width / 28.0,
+                            fontWeight: FontWeight.w400,
+                          ),
+                        ),
+                        Icon(
+                          Feather.calendar,
+                          size: size.width / 20,
+                          color: Colors.grey.shade700,
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),
@@ -269,39 +335,51 @@ class _ReceivePageState extends State<ReceivePage> {
               ),
               Expanded(
                 flex: 5,
-                child: Container(
-                  padding: EdgeInsets.only(
-                    left: 18.0,
-                    right: 12.0,
-                    top: 12.0,
-                    bottom: 12.0,
-                  ),
-                  margin: EdgeInsets.symmetric(
-                    horizontal: 12.0,
-                    vertical: 8.0,
-                  ),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.all(Radius.circular(6.0)),
-                    color: Colors.grey.shade50,
-                    boxShadow: [
-                      BoxShadow(
-                        color: Color(0xFFABBAD5),
-                        spreadRadius: .8,
-                        blurRadius: 2.0,
-                        offset: Offset(0, 2.0), // changes position of shadow
-                      ),
-                    ],
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(''),
-                      Icon(
-                        Feather.calendar,
-                        size: size.width / 20,
-                        color: Colors.grey.shade700,
-                      ),
-                    ],
+                child: GestureDetector(
+                  onTap: () async {
+                    await _selectDateTo(context);
+                  },
+                  child: Container(
+                    padding: EdgeInsets.only(
+                      left: 18.0,
+                      right: 12.0,
+                      top: 12.0,
+                      bottom: 12.0,
+                    ),
+                    margin: EdgeInsets.symmetric(
+                      horizontal: 12.0,
+                      vertical: 8.0,
+                    ),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.all(Radius.circular(6.0)),
+                      color: Colors.grey.shade50,
+                      boxShadow: [
+                        BoxShadow(
+                          color: Color(0xFFABBAD5),
+                          spreadRadius: .8,
+                          blurRadius: 2.0,
+                          offset: Offset(0, 2.0), // changes position of shadow
+                        ),
+                      ],
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          _to,
+                          style: TextStyle(
+                            color: Colors.grey.shade800,
+                            fontSize: size.width / 28.0,
+                            fontWeight: FontWeight.w400,
+                          ),
+                        ),
+                        Icon(
+                          Feather.calendar,
+                          size: size.width / 20,
+                          color: Colors.grey.shade700,
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),

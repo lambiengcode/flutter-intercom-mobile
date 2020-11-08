@@ -30,7 +30,6 @@ class _CallPageState extends State<CallPage> {
   MediaStream _localStream;
   RTCVideoRenderer _localRenderer = new RTCVideoRenderer();
   RTCVideoRenderer _remoteRenderer = new RTCVideoRenderer();
-  var _firebaseRef = FirebaseDatabase().reference();
   bool isFrontCamera = true;
   int id = 12022000;
 
@@ -67,6 +66,10 @@ class _CallPageState extends State<CallPage> {
   }
 
   Future<void> _responce(responce) async {
+    _peerConnection.close();
+    _localStream.dispose();
+    _localRenderer.dispose();
+    _timmerInstance.cancel();
     Firestore.instance.runTransaction((Transaction transaction) async {
       DocumentSnapshot snapshot = await transaction.get(widget.index);
       await transaction.update(widget.index, {
@@ -75,9 +78,6 @@ class _CallPageState extends State<CallPage> {
         'responcedTime': DateTime.now(),
       });
     });
-    _localRenderer.dispose();
-    _remoteRenderer.dispose();
-    _timmerInstance.cancel();
   }
 
   @override
@@ -87,9 +87,9 @@ class _CallPageState extends State<CallPage> {
     initRenderers();
     _createPeerConnection().then((pc) {
       _peerConnection = pc;
+      _setRemoteDescription(
+          jsonDecode(widget.info['sdp'])['sdp']['sdp'].toString());
     });
-    // _setRemoteDescription(
-    //     jsonDecode(widget.info['sdp']['data']['message'])['sdp']['sdp']);
     startTimmer();
   }
 
@@ -235,11 +235,15 @@ class _CallPageState extends State<CallPage> {
 
     // _localStream = stream;
     _localRenderer.srcObject = stream;
-    _localRenderer.mirror = true;
+    _localRenderer.mirror = false;
 
     // _peerConnection.addStream(stream);
 
     return stream;
+  }
+
+  _endCall() async {
+    Map<String, String> userInfo = {};
   }
 
   @override
@@ -256,16 +260,24 @@ class _CallPageState extends State<CallPage> {
             Stack(
               children: [
                 Container(
-                  height: size.height - size.width * .15,
                   width: size.width,
-                  alignment: Alignment.center,
+                  height: size.height - size.width * .15,
                   child: _remoteRenderer.textureId == null
                       ? Container()
-                      : Transform(
-                          transform: Matrix4.identity()..rotateY(0.0),
-                          alignment: FractionalOffset.center,
-                          child:
-                              new Texture(textureId: _remoteRenderer.textureId),
+                      : FittedBox(
+                          fit: BoxFit.cover,
+                          child: new Center(
+                            child: new SizedBox(
+                              width: size.height * 1.34,
+                              height: size.height,
+                              child: new Transform(
+                                transform: Matrix4.identity()..rotateY(0.0),
+                                alignment: FractionalOffset.center,
+                                child: new Texture(
+                                    textureId: _remoteRenderer.textureId),
+                              ),
+                            ),
+                          ),
                         ),
                 ),
                 Positioned(
@@ -286,22 +298,34 @@ class _CallPageState extends State<CallPage> {
                         height: 8.0,
                       ),
                       Container(
-                          height: size.height * .18,
-                          width: size.width * .25,
-                          decoration: BoxDecoration(
-                            borderRadius:
-                                BorderRadius.all(Radius.circular(6.0)),
-                            border: Border.all(
-                                color: Colors.blueAccent, width: 2.0),
-                          ),
-                          alignment: Alignment.center,
-                          child: _localRenderer.textureId == null
-                              ? Container()
-                              : Transform(
-                                  transform: Matrix4.identity()..rotateY(0.0),
-                                  alignment: FractionalOffset.center,
-                                  child: new Texture(
-                                      textureId: _localRenderer.textureId))),
+                        height: size.height * .18,
+                        width: size.width * .28,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.all(Radius.circular(6.0)),
+                          border:
+                              Border.all(color: Colors.blueAccent, width: 2.0),
+                        ),
+                        child: _localRenderer.textureId == null
+                            ? Container()
+                            : FittedBox(
+                                fit: BoxFit.cover,
+                                child: new Center(
+                                  child: new SizedBox(
+                                    width: size.height * .18,
+                                    height: size.height * .18 * 2.167,
+                                    child: new Transform(
+                                      transform: Matrix4.identity()
+                                        ..rotateY(
+                                          isFrontCamera ? -pi : 0.0,
+                                        ),
+                                      alignment: FractionalOffset.center,
+                                      child: new Texture(
+                                          textureId: _localRenderer.textureId),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                      ),
                       SizedBox(
                         height: 12.0,
                       ),
@@ -316,15 +340,17 @@ class _CallPageState extends State<CallPage> {
                           );
                         },
                         child: Container(
-                          height: size.width * .25,
-                          width: size.width * .25,
+                          height: size.width * .28,
+                          width: size.width * .28,
                           decoration: BoxDecoration(
                             borderRadius:
                                 BorderRadius.all(Radius.circular(6.0)),
                             border: Border.all(
                                 color: Colors.blueAccent, width: 2.0),
                             image: DecorationImage(
-                              image: NetworkImage(widget.info['urlToImage']),
+                              image: widget.info['urlToImage'] == ''
+                                  ? AssetImage('images/avt.jpg')
+                                  : NetworkImage(widget.info['urlToImage']),
                               fit: BoxFit.cover,
                             ),
                           ),
@@ -338,8 +364,8 @@ class _CallPageState extends State<CallPage> {
                           switchCamera();
                         },
                         child: Container(
-                          height: size.width * .12,
-                          width: size.width * .12,
+                          height: size.width * .125,
+                          width: size.width * .125,
                           decoration: BoxDecoration(
                             borderRadius:
                                 BorderRadius.all(Radius.circular(4.0)),

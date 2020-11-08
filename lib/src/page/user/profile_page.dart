@@ -19,10 +19,13 @@ class _EditProfilePageState extends State<EditProfilePage> {
   File _image;
   String _username = '';
 
-  Future<String> _uploadImage(file, uid) async {
+  Future<String> _uploadImage(file, uid, key) async {
     String fileName = uid;
-    StorageReference firebaseStorageRef =
-        FirebaseStorage.instance.ref().child('Profile').child(fileName);
+    StorageReference firebaseStorageRef = FirebaseStorage.instance
+        .ref()
+        .child('key')
+        .child('Profile')
+        .child(fileName);
     StorageUploadTask uploadTask = firebaseStorageRef.putFile(file);
     StorageTaskSnapshot taskSnapshot = await uploadTask.onComplete;
     var downUrl = await taskSnapshot.ref.getDownloadURL();
@@ -40,10 +43,11 @@ class _EditProfilePageState extends State<EditProfilePage> {
   Future<void> _updateProfile(index, username, urlToImage, uid) async {
     Firestore.instance.runTransaction((Transaction transaction) async {
       DocumentSnapshot snapshot = await transaction.get(index);
+      String key = snapshot['key'];
       await transaction.update(index, {
         'username': _username == '' ? username : _username,
         'urlToImage':
-            _image == null ? urlToImage : await _uploadImage(_image, uid),
+            _image == null ? urlToImage : await _uploadImage(_image, uid, key),
       });
     });
   }
@@ -137,6 +141,8 @@ class _EditProfilePageState extends State<EditProfilePage> {
             String username = snapshot.data.documents[0]['username'];
             String urlToImage = snapshot.data.documents[0]['urlToImage'];
             String phone = snapshot.data.documents[0]['phone'];
+            String dept = snapshot.data.documents[0]['dept'];
+            String key = snapshot.data.documents[0]['key'];
 
             return ListView(
               children: <Widget>[
@@ -252,6 +258,84 @@ class _EditProfilePageState extends State<EditProfilePage> {
                           enabled: false,
                           contentPadding: EdgeInsets.only(top: 2.0),
                           labelText: 'Phone Number',
+                          labelStyle: TextStyle(
+                            color: Colors.grey.shade700,
+                            fontSize: sizeWidth / 24.0,
+                            fontWeight: FontWeight.w400,
+                          ),
+                          enabledBorder: UnderlineInputBorder(
+                            borderSide: BorderSide(
+                              color: Colors.grey,
+                              width: .6,
+                            ),
+                          ),
+                          focusedBorder: UnderlineInputBorder(
+                            borderSide: BorderSide(
+                              color: Colors.grey,
+                              width: .6,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                SizedBox(
+                  height: 20.0,
+                ),
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 20.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      TextFormField(
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontSize: sizeWidth / 24.0,
+                          fontWeight: FontWeight.w400,
+                        ),
+                        initialValue: dept,
+                        validator: (val) =>
+                            val.length == 0 ? 'Enter your Phone' : null,
+                        decoration: InputDecoration(
+                          enabled: false,
+                          contentPadding: EdgeInsets.only(top: 2.0),
+                          labelText: 'Department',
+                          labelStyle: TextStyle(
+                            color: Colors.grey.shade700,
+                            fontSize: sizeWidth / 24.0,
+                            fontWeight: FontWeight.w400,
+                          ),
+                          enabledBorder: UnderlineInputBorder(
+                            borderSide: BorderSide(
+                              color: Colors.grey,
+                              width: .6,
+                            ),
+                          ),
+                          focusedBorder: UnderlineInputBorder(
+                            borderSide: BorderSide(
+                              color: Colors.grey,
+                              width: .6,
+                            ),
+                          ),
+                        ),
+                      ),
+                      SizedBox(
+                        height: 22.0,
+                      ),
+                      TextFormField(
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontSize: sizeWidth / 24.0,
+                          fontWeight: FontWeight.w400,
+                        ),
+                        initialValue: key,
+                        validator: (val) =>
+                            val.length == 0 ? 'Enter your Phone' : null,
+                        decoration: InputDecoration(
+                          enabled: false,
+                          contentPadding: EdgeInsets.only(top: 2.0),
+                          labelText: 'Company',
                           labelStyle: TextStyle(
                             color: Colors.grey.shade700,
                             fontSize: sizeWidth / 24.0,
