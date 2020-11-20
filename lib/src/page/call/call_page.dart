@@ -242,10 +242,6 @@ class _CallPageState extends State<CallPage> {
     return stream;
   }
 
-  _endCall() async {
-    Map<String, String> userInfo = {};
-  }
-
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;

@@ -210,7 +210,7 @@ class _LoginPageState extends State<LoginPage> {
                                     crossAxisAlignment:
                                         CrossAxisAlignment.center,
                                     children: <Widget>[
-                                      Text("Don\'t have an account\t?\b",
+                                      Text("Don\'t have an account\t?\t",
                                           style: TextStyle(
                                               color: Colors.grey.shade600,
                                               fontWeight: FontWeight.w400,

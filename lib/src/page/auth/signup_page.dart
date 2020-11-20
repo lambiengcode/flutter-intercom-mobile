@@ -46,7 +46,7 @@ class _SignupPageState extends State<SignupPage> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
                         SizedBox(
-                          height: sizeHeight / 2.4,
+                          height: sizeHeight / 3.0,
                         ),
                         Padding(
                           padding:
@@ -159,7 +159,75 @@ class _SignupPageState extends State<SignupPage> {
                                                 left: 12.0,
                                               ),
                                               border: InputBorder.none,
-                                              hintText: "re-Type Password",
+                                              hintText: "Confirm Password",
+                                              hintStyle: TextStyle(
+                                                color: Colors.grey,
+                                                fontSize: sizeWidth / 24,
+                                                fontWeight: FontWeight.w400,
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                        Container(
+                                          padding: EdgeInsets.all(8),
+                                          decoration: BoxDecoration(
+                                              border: Border(
+                                                  bottom: BorderSide(
+                                                      color:
+                                                          Colors.grey[200]))),
+                                          child: TextFormField(
+                                            style: TextStyle(
+                                              color: Colors.black87,
+                                              fontSize: sizeWidth / 24,
+                                              fontWeight: FontWeight.w400,
+                                            ),
+                                            onChanged: (val) =>
+                                                phone = val.trim(),
+                                            validator: (val) =>
+                                                val.trim().length < 10 ||
+                                                        val.trim().length > 11
+                                                    ? 'Type your Phone Number'
+                                                    : null,
+                                            decoration: InputDecoration(
+                                              contentPadding: EdgeInsets.only(
+                                                left: 12.0,
+                                              ),
+                                              border: InputBorder.none,
+                                              hintText: "Phone Number",
+                                              hintStyle: TextStyle(
+                                                color: Colors.grey,
+                                                fontSize: sizeWidth / 24,
+                                                fontWeight: FontWeight.w400,
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                        Container(
+                                          padding: EdgeInsets.all(8),
+                                          decoration: BoxDecoration(
+                                              border: Border(
+                                                  bottom: BorderSide(
+                                                      color:
+                                                          Colors.grey[200]))),
+                                          child: TextFormField(
+                                            style: TextStyle(
+                                              color: Colors.black87,
+                                              fontSize: sizeWidth / 24,
+                                              fontWeight: FontWeight.w400,
+                                            ),
+                                            onChanged: (val) =>
+                                                phone = val.trim(),
+                                            validator: (val) =>
+                                                val.trim().length < 10 ||
+                                                        val.trim().length > 11
+                                                    ? 'Type your Department'
+                                                    : null,
+                                            decoration: InputDecoration(
+                                              contentPadding: EdgeInsets.only(
+                                                left: 12.0,
+                                              ),
+                                              border: InputBorder.none,
+                                              hintText: "Company",
                                               hintStyle: TextStyle(
                                                 color: Colors.grey,
                                                 fontSize: sizeWidth / 24,
@@ -181,14 +249,14 @@ class _SignupPageState extends State<SignupPage> {
                                             validator: (val) =>
                                                 val.trim().length < 10 ||
                                                         val.trim().length > 11
-                                                    ? 'Type your Phone Number'
+                                                    ? 'Type your Department'
                                                     : null,
                                             decoration: InputDecoration(
                                               contentPadding: EdgeInsets.only(
                                                 left: 12.0,
                                               ),
                                               border: InputBorder.none,
-                                              hintText: "Phone Number",
+                                              hintText: "Department",
                                               hintStyle: TextStyle(
                                                 color: Colors.grey,
                                                 fontSize: sizeWidth / 24,
@@ -251,7 +319,7 @@ class _SignupPageState extends State<SignupPage> {
                                     crossAxisAlignment:
                                         CrossAxisAlignment.center,
                                     children: <Widget>[
-                                      Text("Already have an account\t?\b",
+                                      Text("Already have an account\t?\t",
                                           style: TextStyle(
                                               color: Colors.grey.shade600,
                                               fontWeight: FontWeight.w400,

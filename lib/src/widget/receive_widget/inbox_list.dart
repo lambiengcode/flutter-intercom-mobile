@@ -17,6 +17,7 @@ class _InboxListState extends State<InboxList> {
   @override
   void initState() {
     super.initState();
+    print(widget.documents.length);
   }
 
   @override
