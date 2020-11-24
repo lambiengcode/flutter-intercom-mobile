@@ -16,7 +16,6 @@ class _ReceiveCallPageState extends State<ReceiveCallPage> {
   final assetsAudioPlayer = AssetsAudioPlayer();
   Future<void> _responce(bool accept) async {
     Firestore.instance.runTransaction((Transaction transaction) async {
-      DocumentSnapshot snapshot = await transaction.get(widget.index);
       await transaction.update(widget.index, {
         'request': false,
         'completed': !accept,

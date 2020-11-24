@@ -25,7 +25,6 @@ class _CallPageState extends State<CallPage> {
   String _timmer = '';
 
   //VideoCallVariables
-  bool _offer = false;
   RTCPeerConnection _peerConnection;
   MediaStream _localStream;
   RTCVideoRenderer _localRenderer = new RTCVideoRenderer();

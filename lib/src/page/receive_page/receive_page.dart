@@ -60,7 +60,7 @@ class _ReceivePageState extends State<ReceivePage> {
         context: context,
         initialDate: _toDate,
         firstDate: DateTime(2020, 10),
-        lastDate: DateTime.now());
+        lastDate: DateTime.now().add(Duration(days: 1)));
     if (picked != null &&
         picked != _toDate &&
         _toDate.compareTo(_fromDate) != -1)
@@ -181,6 +181,8 @@ class _ReceivePageState extends State<ReceivePage> {
                     ? Firestore.instance
                         .collection('requests')
                         .where('receiveID', isEqualTo: user.uid)
+                        //.where('sortVal', isGreaterThanOrEqualTo: _fromDate.millisecondsSinceEpoch)
+                        .where('sortVal', isLessThanOrEqualTo: _toDate.millisecondsSinceEpoch)
                         .snapshots()
                     : Firestore.instance
                         .collection('requests')
@@ -195,16 +197,18 @@ class _ReceivePageState extends State<ReceivePage> {
 
                   List<DocumentSnapshot> docs = snapshot.data.documents;
 
+                  //filter
                   for (int i = 0; i < docs.length; i++) {
-                    Timestamp t1 = docs[i]['publishAt'];
-                    DateTime publishAt = t1.toDate();
+                    Timestamp pAt = docs[i]['publishAt'];
+                    DateTime publishAt = pAt.toDate();
 
-                    if (_toDate.compareTo(publishAt) == -1 ||
-                        _fromDate.compareTo(publishAt) == 1) {
+                    if(publishAt.compareTo(_fromDate) == -1 || publishAt.compareTo(_toDate) == 1) {
                       docs.removeAt(i);
+                      print('1');
                     }
                   }
 
+                  //sort
                   for (int i = 0; i < docs.length - 1; i++) {
                     for (int j = 0; j < docs.length - 1 - i; j++) {
                       Timestamp t1 = docs[j]['responcedTime'];

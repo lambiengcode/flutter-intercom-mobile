@@ -46,7 +46,19 @@ class _LoginPageState extends State<LoginPage> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
                         SizedBox(
-                          height: sizeHeight / 1.8,
+                          height: sizeHeight * .18,
+                        ),
+                        Container(
+                          height: sizeHeight * .26,
+                          decoration: BoxDecoration(
+                            image: DecorationImage(
+                              image: AssetImage('images/background.jpg'),
+                              fit: BoxFit.fitHeight,
+                            ),
+                          ),
+                        ),
+                        SizedBox(
+                          height: sizeHeight * .1,
                         ),
                         Padding(
                           padding:

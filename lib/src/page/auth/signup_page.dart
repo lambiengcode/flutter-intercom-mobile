@@ -46,7 +46,7 @@ class _SignupPageState extends State<SignupPage> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
                         SizedBox(
-                          height: sizeHeight / 3.0,
+                          height: sizeHeight / 3.8,
                         ),
                         Padding(
                           padding:
