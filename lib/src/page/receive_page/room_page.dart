@@ -182,7 +182,7 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
                   overflow: TextOverflow.visible,
                   text: TextSpan(children: [
                     TextSpan(
-                      text: 'Responced Time\t:\t',
+                      text: 'Responses Time\t:\t',
                       style: TextStyle(
                         fontSize: size.width / 24.0,
                         color: Colors.grey.shade800,

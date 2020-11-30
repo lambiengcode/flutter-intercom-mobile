@@ -43,12 +43,12 @@ class _ReceivePageState extends State<ReceivePage> {
         initialDate: _fromDate,
         firstDate: DateTime(2020, 10),
         lastDate: DateTime.now());
-    if (picked != null &&
-        picked != _fromDate &&
-        _toDate.compareTo(_fromDate) != -1)
+    if (picked != null && picked != _fromDate)
       setState(() {
-        _fromDate = picked;
-        _from = DateFormat('dd/MM/yyyy').format(_fromDate);
+        if (_toDate.compareTo(picked) != -1) {
+          _fromDate = picked;
+          _from = DateFormat('dd/MM/yyyy').format(_fromDate);
+        }
       });
 
     Navigator.of(context).pop(context);
@@ -61,12 +61,12 @@ class _ReceivePageState extends State<ReceivePage> {
         initialDate: _toDate,
         firstDate: DateTime(2020, 10),
         lastDate: DateTime.now().add(Duration(days: 1)));
-    if (picked != null &&
-        picked != _toDate &&
-        _toDate.compareTo(_fromDate) != -1)
+    if (picked != null && picked != _toDate)
       setState(() {
-        _toDate = picked;
-        _to = DateFormat('dd/MM/yyyy').format(_toDate);
+        if (_fromDate.compareTo(picked) != 1) {
+          _toDate = picked;
+          _to = DateFormat('dd/MM/yyyy').format(_toDate);
+        }
       });
     Navigator.of(context).pop(context);
     showFilterBottomSheet();
@@ -93,6 +93,7 @@ class _ReceivePageState extends State<ReceivePage> {
     final user = Provider.of<User>(context);
     return Scaffold(
       appBar: AppBar(
+        brightness: Brightness.dark,
         backgroundColor: Colors.white,
         elevation: 2.0,
         centerTitle: false,
@@ -182,7 +183,6 @@ class _ReceivePageState extends State<ReceivePage> {
                         .collection('requests')
                         .where('receiveID', isEqualTo: user.uid)
                         //.where('sortVal', isGreaterThanOrEqualTo: _fromDate.millisecondsSinceEpoch)
-                        .where('sortVal', isLessThanOrEqualTo: _toDate.millisecondsSinceEpoch)
                         .snapshots()
                     : Firestore.instance
                         .collection('requests')
@@ -199,12 +199,12 @@ class _ReceivePageState extends State<ReceivePage> {
 
                   //filter
                   for (int i = 0; i < docs.length; i++) {
-                    Timestamp pAt = docs[i]['publishAt'];
-                    DateTime publishAt = pAt.toDate();
+                    Timestamp timestamp = docs[i]['publishAt'];
+                    DateTime publishAt = timestamp.toDate();
 
-                    if(publishAt.compareTo(_fromDate) == -1 || publishAt.compareTo(_toDate) == 1) {
+                    if (publishAt.compareTo(_fromDate) == -1 ||
+                        publishAt.compareTo(_toDate) == 1) {
                       docs.removeAt(i);
-                      print('1');
                     }
                   }
 

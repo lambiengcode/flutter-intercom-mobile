@@ -21,6 +21,8 @@ class _SignupPageState extends State<SignupPage> {
   String email = '';
   String password = '';
   String phone = '';
+  String dept = '';
+  String company = '';
 
   bool hidePassword = true;
   bool loading = false;
@@ -216,11 +218,10 @@ class _SignupPageState extends State<SignupPage> {
                                               fontWeight: FontWeight.w400,
                                             ),
                                             onChanged: (val) =>
-                                                phone = val.trim(),
+                                                company = val.trim(),
                                             validator: (val) =>
-                                                val.trim().length < 10 ||
-                                                        val.trim().length > 11
-                                                    ? 'Type your Department'
+                                                val.trim().length == 0
+                                                    ? 'Type your Company name'
                                                     : null,
                                             decoration: InputDecoration(
                                               contentPadding: EdgeInsets.only(
@@ -245,10 +246,9 @@ class _SignupPageState extends State<SignupPage> {
                                               fontWeight: FontWeight.w400,
                                             ),
                                             onChanged: (val) =>
-                                                phone = val.trim(),
+                                                dept = val.trim(),
                                             validator: (val) =>
-                                                val.trim().length < 10 ||
-                                                        val.trim().length > 11
+                                                val.trim().length == 0
                                                     ? 'Type your Department'
                                                     : null,
                                             decoration: InputDecoration(
@@ -280,8 +280,8 @@ class _SignupPageState extends State<SignupPage> {
                                           loading = true;
                                         });
                                         dynamic result = await _auth
-                                            .registerWithEmailAndPassword(
-                                                email, password, phone);
+                                            .registerWithEmailAndPassword(email,
+                                                password, phone, dept, company);
                                         if (result == null) {
                                           setState(() {
                                             loading = false;

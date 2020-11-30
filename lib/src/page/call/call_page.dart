@@ -284,7 +284,7 @@ class _CallPageState extends State<CallPage> {
                         _timmer,
                         style: TextStyle(
                           color: _remoteRenderer.textureId == null
-                              ? Colors.grey.shade600
+                              ? Colors.white
                               : Colors.black,
                           fontSize: size.width / 26.5,
                         ),
@@ -293,8 +293,8 @@ class _CallPageState extends State<CallPage> {
                         height: 8.0,
                       ),
                       Container(
-                        height: size.height * .18,
-                        width: size.width * .28,
+                        height: size.width * .54,
+                        width: size.width * .32,
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.all(Radius.circular(6.0)),
                           border:
@@ -302,22 +302,17 @@ class _CallPageState extends State<CallPage> {
                         ),
                         child: _localRenderer.textureId == null
                             ? Container()
-                            : FittedBox(
-                                fit: BoxFit.cover,
-                                child: new Center(
-                                  child: new SizedBox(
-                                    width: size.height * .18,
-                                    height: size.height * .18 * 2.167,
-                                    child: new Transform(
-                                      transform: Matrix4.identity()
-                                        ..rotateY(
-                                          isFrontCamera ? -pi : 0.0,
-                                        ),
-                                      alignment: FractionalOffset.center,
-                                      child: new Texture(
-                                          textureId: _localRenderer.textureId),
+                            : SizedBox(
+                                width: size.height,
+                                height: size.height,
+                                child: new Transform(
+                                  transform: Matrix4.identity()
+                                    ..rotateY(
+                                      isFrontCamera ? -pi : 0.0,
                                     ),
-                                  ),
+                                  alignment: FractionalOffset.center,
+                                  child: new Texture(
+                                      textureId: _localRenderer.textureId),
                                 ),
                               ),
                       ),
@@ -335,8 +330,8 @@ class _CallPageState extends State<CallPage> {
                           );
                         },
                         child: Container(
-                          height: size.width * .28,
-                          width: size.width * .28,
+                          height: size.width * .3,
+                          width: size.width * .3,
                           decoration: BoxDecoration(
                             borderRadius:
                                 BorderRadius.all(Radius.circular(6.0)),

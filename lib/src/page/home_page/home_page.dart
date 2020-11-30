@@ -1,13 +1,10 @@
 import 'dart:async';
 import 'dart:io';
-import 'package:assets_audio_player/assets_audio_player.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_icons/flutter_icons.dart';
 import 'package:project_message_demo/src/page/receive_page/receive_page.dart';
-import 'package:project_message_demo/src/page/user/profile_page.dart';
 
 class HomePage extends StatefulWidget {
   final String uid;
@@ -45,26 +42,12 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
     }
   }
 
-  playLocal() async {
-    final assetsAudioPlayer = AssetsAudioPlayer();
-    try {
-      await assetsAudioPlayer.open(
-        Audio('assets/message.mp3'),
-        showNotification: true,
-        autoStart: true,
-        loopMode: LoopMode.single,
-      );
-    } catch (t) {
-      //stream unreachable
-    }
-  }
-
   @override
   void initState() {
     super.initState();
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
       statusBarColor: Colors.transparent,
-      statusBarBrightness: Brightness.light,
+      statusBarBrightness: Brightness.dark,
       statusBarIconBrightness: Brightness.dark,
     ));
     SystemChrome.setPreferredOrientations([

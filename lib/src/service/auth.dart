@@ -24,7 +24,7 @@ class AuthService {
       FirebaseUser user = result.user;
 
       //create info client
-      await _createDataUser(user.uid, user.uid, '');
+      await _createDataUser(user.uid, user.uid, '', '', '');
 
       return _userFromFirebaseUser(user);
     } catch (e) {
@@ -48,15 +48,15 @@ class AuthService {
   }
 
   //register with email & password
-  Future registerWithEmailAndPassword(
-      String email, String password, String phone) async {
+  Future registerWithEmailAndPassword(String email, String password,
+      String phone, String dept, String company) async {
     try {
       AuthResult result = await _auth.createUserWithEmailAndPassword(
           email: email, password: password);
       FirebaseUser user = result.user;
 
       //create info client
-      await _createDataUser(email, user.uid, phone);
+      await _createDataUser(email, user.uid, phone, dept, company);
 
       return _userFromFirebaseUser(user);
     } catch (e) {
@@ -100,13 +100,16 @@ class AuthService {
     }
   }
 
-  Future<void> _createDataUser(email, uid, phone) async {
+  Future<void> _createDataUser(email, uid, phone, dept, company) async {
     Firestore.instance.collection('users').document(uid).setData({
       'email': email,
       'id': uid,
       'username': email.toString().substring(0, email.toString().length - 10),
       'publishAt': DateTime.now(),
       'phone': phone,
+      'urlToImage': '',
+      'dept': dept,
+      'key': company,
     });
   }
 
@@ -126,7 +129,7 @@ class AuthService {
         print("USING NOW");
       } else {
         //create nor data
-        _createDataUser(email, uid, phone);
+        _createDataUser(email, uid, phone, '', '');
       }
     });
   }
