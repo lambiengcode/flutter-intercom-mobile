@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:project_message_demo/src/page/receive_page/receive_page.dart';
 
 class HomePage extends StatefulWidget {
@@ -28,16 +27,10 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
 
     // Save it to Firestore
     if (fcmToken != null) {
-      var tokens = _db
-          .collection('users')
-          .document(uid)
-          .collection('tokens')
-          .document(fcmToken);
+      var tokens = _db.collection('users').document(uid);
 
-      await tokens.setData({
+      await tokens.updateData({
         'token': fcmToken,
-        'createdAt': FieldValue.serverTimestamp(), // optional
-        'platform': Platform.operatingSystem, // optional
       });
     }
   }
@@ -45,15 +38,6 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
   @override
   void initState() {
     super.initState();
-    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-      statusBarColor: Colors.transparent,
-      statusBarBrightness: Brightness.dark,
-      statusBarIconBrightness: Brightness.dark,
-    ));
-    SystemChrome.setPreferredOrientations([
-      DeviceOrientation.portraitDown,
-      DeviceOrientation.portraitUp,
-    ]);
 
     if (Platform.isIOS) {
       iosSubscription = _fcm.onIosSettingsRegistered.listen((data) {
