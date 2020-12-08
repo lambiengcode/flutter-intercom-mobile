@@ -23,7 +23,6 @@ export const sendToDevice = functions.firestore
         body: `Calling...`,
         icon: "your-icon-url",
         click_action: "FLUTTER_NOTIFICATION_CLICK",
-        sound: "../res/raw/calling.mp3",
         priority: "high",
       },
     };
@@ -36,23 +35,46 @@ export const sendToTopic = functions.firestore
   .onCreate(async (snapshot) => {
     const notification = snapshot.data();
 
-    const querySnapshot = await db
-      .collection("users")
-      .where("id", "in", notification.members)
-      .get();
+    if (notification.all) {
+      const querySnapshot = await db
+        .collection("users")
+        .where("key", "==", notification.key)
+        .get();
 
-    const tokens = querySnapshot.docs.map((snap) => snap.data().token);
+      const tokens = querySnapshot.docs.map((snap) => snap.data().token);
 
-    const payload: admin.messaging.MessagingPayload = {
-      notification: {
-        title: `${notification.title}`,
-        body: `${notification.body}`,
-        image: `${notification.urlToImage}`,
-        icon: "your-icon-url",
-        click_action: "FLUTTER_NOTIFICATION_CLICK", // required only for onResume or onLaunch callbacks
-        priority: "high",
-      },
-    };
+      const payload: admin.messaging.MessagingPayload = {
+        notification: {
+          title: `${notification.title}`,
+          body: `${notification.body}`,
+          image: `${notification.urlToImage}`,
+          icon: "your-icon-url",
+          click_action: "FLUTTER_NOTIFICATION_CLICK", // required only for onResume or onLaunch callbacks
+          priority: "high",
+        },
+      };
 
-    return fcm.sendToDevice(tokens, payload);
+      return fcm.sendToDevice(tokens, payload);
+    } else {
+      const querySnapshot = await db
+        .collection("users")
+        .where("key", "==", notification.key)
+        .where("id", "in", notification.members)
+        .get();
+
+      const tokens = querySnapshot.docs.map((snap) => snap.data().token);
+
+      const payload: admin.messaging.MessagingPayload = {
+        notification: {
+          title: `${notification.title}`,
+          body: `${notification.body}`,
+          image: `${notification.urlToImage}`,
+          icon: "your-icon-url",
+          click_action: "FLUTTER_NOTIFICATION_CLICK", // required only for onResume or onLaunch callbacks
+          priority: "high",
+        },
+      };
+
+      return fcm.sendToDevice(tokens, payload);
+    }
   });

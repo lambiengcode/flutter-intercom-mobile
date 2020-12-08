@@ -52,7 +52,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
     _fcm.configure(
       onMessage: (Map<String, dynamic> message) async {
         print("onMessage: $message");
-        //playLocal();
+        //show popup
       },
       onLaunch: (Map<String, dynamic> message) async {
         print("onLaunch: $message");

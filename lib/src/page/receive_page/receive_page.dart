@@ -149,8 +149,15 @@ class _ReceivePageState extends State<ReceivePage> {
               showFilterBottomSheet();
             },
           ),
-          SizedBox(
-            width: 4.0,
+          IconButton(
+            icon: Icon(
+              Feather.bell,
+              size: size.width / 16.0,
+              color: Colors.grey.shade800,
+            ),
+            onPressed: () {
+              showFilterBottomSheet();
+            },
           ),
           IconButton(
             icon: Icon(
