@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:project_message_demo/src/animation/fade_animation.dart';
 import 'package:project_message_demo/src/model/user.dart';
+import 'package:project_message_demo/src/page/notification/notification_page.dart';
 import 'package:project_message_demo/src/page/user/profile_page.dart';
 import 'package:project_message_demo/src/widget/receive_widget/inbox_list.dart';
 import 'package:provider/provider.dart';
@@ -142,7 +143,7 @@ class _ReceivePageState extends State<ReceivePage> {
           IconButton(
             icon: Icon(
               Feather.sliders,
-              size: size.width / 16.0,
+              size: size.width / 16.5,
               color: Colors.grey.shade800,
             ),
             onPressed: () {
@@ -152,17 +153,21 @@ class _ReceivePageState extends State<ReceivePage> {
           IconButton(
             icon: Icon(
               Feather.bell,
-              size: size.width / 16.0,
+              size: size.width / 16.5,
               color: Colors.grey.shade800,
             ),
             onPressed: () {
-              showFilterBottomSheet();
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => NotificationPage(),
+                ),
+              );
             },
           ),
           IconButton(
             icon: Icon(
               Feather.settings,
-              size: size.width / 16.0,
+              size: size.width / 16.5,
               color: Colors.grey.shade800,
             ),
             onPressed: () {

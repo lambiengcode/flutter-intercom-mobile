@@ -44,6 +44,7 @@ dependencies:
   firebase_database:
   flutter_webrtc: ^0.2.8
   sdp_transform: ^0.2.0
+  rflutter_alert: ^1.0.3
 
 dev_dependencies:
   flutter_test:
