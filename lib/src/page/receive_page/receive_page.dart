@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:project_message_demo/src/animation/fade_animation.dart';
 import 'package:project_message_demo/src/model/user.dart';
-import 'package:project_message_demo/src/page/notification/notification_page.dart';
+import 'package:project_message_demo/src/page/notification_page/notification_page.dart';
 import 'package:project_message_demo/src/page/user/profile_page.dart';
 import 'package:project_message_demo/src/widget/receive_widget/inbox_list.dart';
 import 'package:provider/provider.dart';

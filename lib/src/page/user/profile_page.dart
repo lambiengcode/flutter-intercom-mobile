@@ -18,6 +18,8 @@ class EditProfilePage extends StatefulWidget {
 class _EditProfilePageState extends State<EditProfilePage> {
   File _image;
   String _username = '';
+  final _formKey = GlobalKey<FormState>();
+  String _password = '';
 
   Future<String> _uploadImage(file, uid, key) async {
     String fileName = uid;
@@ -63,6 +65,128 @@ class _EditProfilePageState extends State<EditProfilePage> {
       print("Password can't be changed" + error.toString());
       //This might happen, when the wrong password is in, the user isn't found, or if the user hasn't logged in recently.
     });
+  }
+
+  void _showChangePasswordDialog(sizeWidth, sizeHeight) {
+    showDialog<void>(
+      context: context,
+      barrierDismissible: true,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(
+            30.0,
+          ))),
+          content: Form(
+            key: _formKey,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(
+                      30.0,
+                    ),
+                    color: Colors.white,
+                  ),
+                  child: Column(
+                    children: <Widget>[
+                      Container(
+                        padding: EdgeInsets.all(8),
+                        decoration: BoxDecoration(
+                            border: Border(
+                                bottom: BorderSide(color: Colors.grey[200]))),
+                        child: TextFormField(
+                          style: TextStyle(
+                            color: Colors.black87,
+                            fontSize: sizeWidth / 26.0,
+                            fontWeight: FontWeight.w400,
+                          ),
+                          onChanged: (val) => _password = val.trim(),
+                          validator: (val) => val.length < 6
+                              ? 'Password must be least 6 characters'
+                              : null,
+                          obscureText: true,
+                          decoration: InputDecoration(
+                            contentPadding: EdgeInsets.only(
+                              left: 4.0,
+                            ),
+                            border: InputBorder.none,
+                            hintText: "New Password",
+                            hintStyle: TextStyle(
+                              color: Colors.grey,
+                              fontSize: sizeWidth / 26.0,
+                              fontWeight: FontWeight.w400,
+                            ),
+                          ),
+                        ),
+                      ),
+                      Container(
+                        padding: EdgeInsets.all(8),
+                        child: TextFormField(
+                          style: TextStyle(
+                            color: Colors.black87,
+                            fontSize: sizeWidth / 26.0,
+                            fontWeight: FontWeight.w400,
+                          ),
+                          validator: (val) => val.trim() != _password.trim()
+                              ? 'Password do not match'
+                              : null,
+                          obscureText: true,
+                          decoration: InputDecoration(
+                            contentPadding: EdgeInsets.only(
+                              left: 4.0,
+                            ),
+                            border: InputBorder.none,
+                            hintText: "Confirm Password",
+                            hintStyle: TextStyle(
+                              color: Colors.grey,
+                              fontSize: sizeWidth / 26.0,
+                              fontWeight: FontWeight.w400,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                SizedBox(
+                  height: 6.0,
+                ),
+                GestureDetector(
+                  onTap: () async {
+                    if (_formKey.currentState.validate()) {
+                      _changePassword(_password);
+                      Navigator.of(context).pop(context);
+                    }
+                  },
+                  child: Container(
+                    height: sizeHeight * 0.065,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(
+                        30.0,
+                      ),
+                      color: Colors.blueAccent,
+                    ),
+                    child: Center(
+                      child: Text(
+                        "Confirm",
+                        style: TextStyle(
+                          color: Colors.white.withOpacity(.88),
+                          fontSize: 14.0,
+                          fontWeight: FontWeight.w800,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
   }
 
   @override
@@ -155,7 +279,6 @@ class _EditProfilePageState extends State<EditProfilePage> {
             String urlToImage = snapshot.data.documents[0]['urlToImage'];
             String phone = snapshot.data.documents[0]['phone'];
             String dept = snapshot.data.documents[0]['dept'];
-            String key = snapshot.data.documents[0]['key'];
 
             return ListView(
               children: <Widget>[
@@ -366,26 +489,34 @@ class _EditProfilePageState extends State<EditProfilePage> {
                 SizedBox(
                   height: 12.0,
                 ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      'Change your password',
-                      style: TextStyle(
-                        color: Colors.deepPurple[800],
-                        fontSize: sizeWidth / 26.0,
-                        fontWeight: FontWeight.w600,
+                GestureDetector(
+                  onTap: () {
+                    _showChangePasswordDialog(
+                      MediaQuery.of(context).size.width,
+                      MediaQuery.of(context).size.height,
+                    );
+                  },
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        'Change your password',
+                        style: TextStyle(
+                          color: Colors.deepPurple[800],
+                          fontSize: sizeWidth / 26.0,
+                          fontWeight: FontWeight.w600,
+                        ),
                       ),
-                    ),
-                    SizedBox(
-                      width: 4.0,
-                    ),
-                    Icon(
-                      Feather.arrow_right,
-                      color: Colors.deepPurple[800],
-                      size: sizeWidth / 22.5,
-                    ),
-                  ],
+                      SizedBox(
+                        width: 4.0,
+                      ),
+                      Icon(
+                        Feather.arrow_right,
+                        color: Colors.deepPurple[800],
+                        size: sizeWidth / 22.5,
+                      ),
+                    ],
+                  ),
                 ),
               ],
             );

@@ -3,9 +3,8 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
-import 'package:project_message_demo/src/page/notification/notification_page.dart';
+import 'package:project_message_demo/src/page/notification_page/notification_page.dart';
 import 'package:project_message_demo/src/page/receive_page/receive_page.dart';
-import 'package:project_message_demo/src/widget/general/photo_viewer.dart';
 
 class HomePage extends StatefulWidget {
   final String uid;
@@ -57,11 +56,6 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
 
     _fcm.configure(
       onMessage: (Map<String, dynamic> message) async {
-        print("onMessage: $message");
-
-        Map data = message['data'] as Map;
-        print('Vinh $data');
-        //show popup
         showDialog<void>(
           context: context,
           barrierDismissible: false, // user must tap button!
@@ -114,11 +108,19 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
       },
       onLaunch: (Map<String, dynamic> message) async {
         print("onLaunch: $message");
-        // TODO optional
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (context) => NotificationPage(),
+          ),
+        );
       },
       onResume: (Map<String, dynamic> message) async {
         print("onResume: $message");
-        // TODO optional
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (context) => NotificationPage(),
+          ),
+        );
       },
     );
   }
