@@ -25,14 +25,14 @@ class _NotificationItemState extends State<NotificationItem> {
       ),
       padding: EdgeInsets.only(
         left: 20.0,
-        right: 4.0,
+        right: 8.0,
         bottom: 8.0,
       ),
       decoration: BoxDecoration(
           border: Border(
               bottom: BorderSide(
         color: Colors.grey.shade300,
-        width: .8,
+        width: .4,
       ))),
       child: Row(
         children: [
@@ -62,6 +62,9 @@ class _NotificationItemState extends State<NotificationItem> {
               ],
             ),
           ),
+          SizedBox(
+            width: 8.0,
+          ),
           widget.urlToImage == ''
               ? Container()
               : GestureDetector(
@@ -83,7 +86,7 @@ class _NotificationItemState extends State<NotificationItem> {
                       ),
                       border: Border.all(
                         color: Colors.blueGrey.shade100,
-                        width: .85,
+                        width: .8,
                       ),
                       image: DecorationImage(
                         image: NetworkImage(widget.urlToImage),

@@ -15,7 +15,7 @@ class MyApp extends StatelessWidget {
       value: AuthService().user,
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
-        title: 'Message-App',
+        title: 'Intercom',
         theme: ThemeData(
           brightness: Brightness.light,
           primarySwatch: Colors.blue,

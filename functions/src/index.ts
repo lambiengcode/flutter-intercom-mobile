@@ -39,6 +39,7 @@ export const sendToTopic = functions.firestore
       const querySnapshot = await db
         .collection("users")
         .where("key", "==", notification.key)
+        .where("notifications", '==', true)
         .get();
 
       const tokens = querySnapshot.docs.map((snap) => snap.data().token);
@@ -60,6 +61,7 @@ export const sendToTopic = functions.firestore
         .collection("users")
         .where("key", "==", notification.key)
         .where("id", "in", notification.members)
+        .where("notifications", '==', true)
         .get();
 
       const tokens = querySnapshot.docs.map((snap) => snap.data().token);

@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -48,6 +49,19 @@ class _EditProfilePageState extends State<EditProfilePage> {
         'urlToImage':
             _image == null ? urlToImage : await _uploadImage(_image, uid, key),
       });
+    });
+  }
+
+  void _changePassword(String password) async {
+    //Create an instance of the current user.
+    FirebaseUser user = await FirebaseAuth.instance.currentUser();
+
+    //Pass in the password to updatePassword.
+    user.updatePassword(password).then((_) {
+      print("Succesfull changed password");
+    }).catchError((error) {
+      print("Password can't be changed" + error.toString());
+      //This might happen, when the wrong password is in, the user isn't found, or if the user hasn't logged in recently.
     });
   }
 
@@ -319,46 +333,11 @@ class _EditProfilePageState extends State<EditProfilePage> {
                           ),
                         ),
                       ),
-                      SizedBox(
-                        height: 22.0,
-                      ),
-                      TextFormField(
-                        style: TextStyle(
-                          color: Colors.black,
-                          fontSize: sizeWidth / 24.0,
-                          fontWeight: FontWeight.w400,
-                        ),
-                        initialValue: key,
-                        validator: (val) =>
-                            val.length == 0 ? 'Enter your Phone' : null,
-                        decoration: InputDecoration(
-                          enabled: false,
-                          contentPadding: EdgeInsets.only(top: 2.0),
-                          labelText: 'Company',
-                          labelStyle: TextStyle(
-                            color: Colors.grey.shade700,
-                            fontSize: sizeWidth / 24.0,
-                            fontWeight: FontWeight.w400,
-                          ),
-                          enabledBorder: UnderlineInputBorder(
-                            borderSide: BorderSide(
-                              color: Colors.grey,
-                              width: .6,
-                            ),
-                          ),
-                          focusedBorder: UnderlineInputBorder(
-                            borderSide: BorderSide(
-                              color: Colors.grey,
-                              width: .6,
-                            ),
-                          ),
-                        ),
-                      ),
                     ],
                   ),
                 ),
                 SizedBox(
-                  height: 40.0,
+                  height: 24.0,
                 ),
                 GestureDetector(
                   onTap: () async {
@@ -383,6 +362,30 @@ class _EditProfilePageState extends State<EditProfilePage> {
                       ),
                     ),
                   ),
+                ),
+                SizedBox(
+                  height: 12.0,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      'Change your password',
+                      style: TextStyle(
+                        color: Colors.deepPurple[800],
+                        fontSize: sizeWidth / 26.0,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    SizedBox(
+                      width: 4.0,
+                    ),
+                    Icon(
+                      Feather.arrow_right,
+                      color: Colors.deepPurple[800],
+                      size: sizeWidth / 22.5,
+                    ),
+                  ],
                 ),
               ],
             );

@@ -20,6 +20,7 @@ class _AppState extends State<App> {
   @override
   Widget build(BuildContext context) {
     final user = Provider.of<User>(context);
+    final size = MediaQuery.of(context).size;
 
     return user == null
         ? AuthenticatePage()
@@ -48,6 +49,7 @@ class _AppState extends State<App> {
                         )
                   : HomePage(
                       uid: user.uid,
+                      size: size,
                     );
             });
   }
