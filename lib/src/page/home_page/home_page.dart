@@ -6,6 +6,21 @@ import 'package:flutter/material.dart';
 import 'package:project_message_demo/src/page/notification_page/notification_page.dart';
 import 'package:project_message_demo/src/page/receive_page/receive_page.dart';
 
+Future<dynamic> myBackgroundMessageHandler(Map<String, dynamic> message) async {
+  if (message.containsKey('data')) {
+    // Handle data message
+    final dynamic data = message['data'];
+  }
+
+  if (message.containsKey('notification')) {
+    // Handle notification message
+    final dynamic notification = message['notification'];
+    print(notification);
+  }
+
+  // Or do other work.
+}
+
 class HomePage extends StatefulWidget {
   final String uid;
   final Size size;
@@ -106,6 +121,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
           },
         );
       },
+      onBackgroundMessage: myBackgroundMessageHandler,
       onLaunch: (Map<String, dynamic> message) async {
         print("onLaunch: $message");
         Navigator.of(context).push(

@@ -16,9 +16,10 @@
     // Add the following permission if your scenario involves reading the external storage:
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
 
     <application
-        android:name="io.flutter.app.FlutterApplication"
+        android:name=".Application"
         android:label="Intercom"
         android:icon="@mipmap/ic_launcher">
         <activity
