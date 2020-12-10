@@ -44,6 +44,12 @@ class _ReceiveCallPageState extends State<ReceiveCallPage> {
   }
 
   @override
+  void dispose() {
+    super.dispose();
+    assetsAudioPlayer.stop();
+  }
+
+  @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     return Scaffold(

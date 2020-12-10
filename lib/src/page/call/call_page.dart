@@ -94,8 +94,9 @@ class _CallPageState extends State<CallPage> {
 
   @override
   void dispose() {
+    _peerConnection.close();
+    _localStream.dispose();
     _localRenderer.dispose();
-    _remoteRenderer.dispose();
     _timmerInstance.cancel();
     super.dispose();
   }

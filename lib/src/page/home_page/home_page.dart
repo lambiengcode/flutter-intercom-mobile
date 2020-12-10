@@ -71,55 +71,57 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
 
     _fcm.configure(
       onMessage: (Map<String, dynamic> message) async {
-        showDialog<void>(
-          context: context,
-          barrierDismissible: false, // user must tap button!
-          builder: (BuildContext context) {
-            return AlertDialog(
-              title: Text(
-                message['notification']['title'],
-                style: TextStyle(
-                  color: Colors.black,
-                  fontSize: widget.size.width / 21.5,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              content: SingleChildScrollView(
-                child: ListBody(
-                  children: <Widget>[
-                    Text(
-                      message['notification']['body'],
+        message['notification']['title'] == 'Admin'
+            ? print('lambiengcode')
+            : showDialog<void>(
+                context: context,
+                barrierDismissible: false, // user must tap button!
+                builder: (BuildContext context) {
+                  return AlertDialog(
+                    title: Text(
+                      message['notification']['title'],
                       style: TextStyle(
-                        color: Colors.grey.shade800,
-                        fontSize: widget.size.width / 25.0,
-                        fontWeight: FontWeight.w400,
+                        color: Colors.black,
+                        fontSize: widget.size.width / 21.5,
+                        fontWeight: FontWeight.bold,
                       ),
                     ),
-                  ],
-                ),
-              ),
-              actions: <Widget>[
-                TextButton(
-                  child: Text('Close'),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                ),
-                TextButton(
-                  child: Text('Notifications'),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (context) => NotificationPage(),
+                    content: SingleChildScrollView(
+                      child: ListBody(
+                        children: <Widget>[
+                          Text(
+                            message['notification']['body'],
+                            style: TextStyle(
+                              color: Colors.grey.shade800,
+                              fontSize: widget.size.width / 25.0,
+                              fontWeight: FontWeight.w400,
+                            ),
+                          ),
+                        ],
                       ),
-                    );
-                  },
-                ),
-              ],
-            );
-          },
-        );
+                    ),
+                    actions: <Widget>[
+                      TextButton(
+                        child: Text('Close'),
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                      ),
+                      TextButton(
+                        child: Text('Notifications'),
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (context) => NotificationPage(),
+                            ),
+                          );
+                        },
+                      ),
+                    ],
+                  );
+                },
+              );
       },
       onBackgroundMessage: myBackgroundMessageHandler,
       onLaunch: (Map<String, dynamic> message) async {
