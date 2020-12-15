@@ -210,16 +210,15 @@ class _ReceivePageState extends State<ReceivePage> {
                   List<DocumentSnapshot> docs = snapshot.data.documents;
 
                   //filter
-                  for (int i = 0; i < docs.length; i++) {
-                    Timestamp timestamp = docs[i]['publishAt'];
-                    DateTime publishAt = timestamp.toDate();
-
-                    if (publishAt.compareTo(_fromDate) == -1 ||
-                        publishAt.compareTo(_toDate) == 1) {
-                      docs.removeAt(i);
-                    }
-                  }
-
+                  docs
+                      .where((doc) {
+                        Timestamp responsedTime = doc['responcedTime'];
+                        DateTime response = responsedTime.toDate();
+                        return response.compareTo(_toDate) == 1 ||
+                            response.compareTo(_fromDate) == -1;
+                      }) // filter keys
+                      .toList() // create a copy to avoid concurrent modifications
+                      .forEach(docs.remove);
                   //sort
                   for (int i = 0; i < docs.length - 1; i++) {
                     for (int j = 0; j < docs.length - 1 - i; j++) {
