@@ -1,8 +1,10 @@
-# Intercom
+### Smart Intercom for Apartment :office::office::office:
 
-video call mobile app using flutter and firebase
+#### You can video call, notification to members and check your history :watch::watch:
 
-1. clone this repo
-2. run 'flutter get packages' on command
-3. edit your firebase config
-4. run app
+#### How I can run it? :tada:
+
+- :rocket: Clone this repository
+- :rocket: Run 'flutter get packages' on terminal in project
+- :rocket: Edit your firebase config
+- :rocket: Run app & register user
