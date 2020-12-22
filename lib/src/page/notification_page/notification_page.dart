@@ -18,6 +18,7 @@ class _NotificationPageState extends State<NotificationPage> {
     final sizeWidth = MediaQuery.of(context).size.width;
     return Scaffold(
       appBar: AppBar(
+        brightness: Brightness.light,
         elevation: 1.5,
         backgroundColor: Colors.white,
         centerTitle: true,

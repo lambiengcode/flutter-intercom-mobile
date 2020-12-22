@@ -94,7 +94,7 @@ class _ReceivePageState extends State<ReceivePage> {
     final user = Provider.of<User>(context);
     return Scaffold(
       appBar: AppBar(
-        brightness: Brightness.dark,
+        brightness: Brightness.light,
         backgroundColor: Colors.white,
         elevation: 2.0,
         centerTitle: false,

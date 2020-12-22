@@ -197,6 +197,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
 
     return Scaffold(
       appBar: AppBar(
+        brightness: Brightness.light,
         elevation: 1.5,
         backgroundColor: Colors.white,
         centerTitle: true,

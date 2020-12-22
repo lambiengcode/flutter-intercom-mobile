@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:project_message_demo/src/model/user.dart';
 import 'package:project_message_demo/src/page/auth/auth_page.dart';
 import 'package:project_message_demo/src/page/call/call_page.dart';
@@ -17,6 +18,14 @@ class App extends StatefulWidget {
 }
 
 class _AppState extends State<App> {
+  @override
+  void initState() {
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+      statusBarColor: Colors.transparent,
+    ));
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     final user = Provider.of<User>(context);

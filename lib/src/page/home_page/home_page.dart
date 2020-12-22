@@ -124,22 +124,6 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
               );
       },
       onBackgroundMessage: myBackgroundMessageHandler,
-      onLaunch: (Map<String, dynamic> message) async {
-        print("onLaunch: $message");
-        Navigator.of(context).push(
-          MaterialPageRoute(
-            builder: (context) => NotificationPage(),
-          ),
-        );
-      },
-      onResume: (Map<String, dynamic> message) async {
-        print("onResume: $message");
-        Navigator.of(context).push(
-          MaterialPageRoute(
-            builder: (context) => NotificationPage(),
-          ),
-        );
-      },
     );
   }
 
