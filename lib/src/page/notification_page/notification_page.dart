@@ -78,31 +78,33 @@ class _NotificationPageState extends State<NotificationPage> {
                         return Container();
                       }
 
-                      List<DocumentSnapshot> res = result.data.documents;
+                      List<DocumentSnapshot> docs = result.data.documents;
 
-                      for (int i = 0; i < res.length; i++) {
-                        if (res[i]['all'] == false) {
-                          int count = 0;
-                          List<dynamic> members = res[i]['members'];
-                          for (int j = 0; j < members.length; j++) {
-                            if (user.uid == members[j]) {
-                              count++;
+                      docs
+                          .where((doc) {
+                            if (doc['all'] == false) {
+                              int count = 0;
+                              List<dynamic> members = doc['members'];
+                              for (int j = 0; j < members.length; j++) {
+                                if (user.uid == members[j]) {
+                                  count++;
+                                }
+                              }
+
+                              return count == 0 ? true : false;
                             }
-                          }
-                          if (count == 0) {
-                            res.removeAt(i);
-                          }
-                        }
-                      }
+                            return false;
+                          }) // filter keys
+                          .toList() // create a copy to avoid concurrent modifications
+                          .forEach(docs.remove);
 
-                      print(res.length);
                       return ListView.builder(
-                        itemCount: res.length,
+                        itemCount: docs.length,
                         itemBuilder: (context, index) {
                           return NotificationItem(
-                            title: res[index]['title'],
-                            body: res[index]['body'],
-                            urlToImage: res[index]['urlToImage'],
+                            title: docs[index]['title'],
+                            body: docs[index]['body'],
+                            urlToImage: docs[index]['urlToImage'],
                           );
                         },
                       );
