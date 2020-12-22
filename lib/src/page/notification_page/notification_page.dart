@@ -12,6 +12,16 @@ class NotificationPage extends StatefulWidget {
 }
 
 class _NotificationPageState extends State<NotificationPage> {
+  Future<void> _updateNotification(index) async {
+    Firestore.instance.runTransaction((Transaction transaction) async {
+      DocumentSnapshot snapshot = await transaction.get(index);
+      bool notification = snapshot['notifications'];
+      await transaction.update(index, {
+        'notifications': !notification,
+      });
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final user = Provider.of<User>(context);
@@ -42,13 +52,37 @@ class _NotificationPageState extends State<NotificationPage> {
           ),
         ),
         actions: [
-          IconButton(
-            icon: Icon(
-              Feather.bell,
-              color: Colors.grey.shade800,
-              size: sizeWidth / 16.5,
-            ),
-            onPressed: () {},
+          StreamBuilder(
+            stream: Firestore.instance
+                .collection('users')
+                .where('id', isEqualTo: user.uid)
+                .snapshots(),
+            builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
+              if (!snapshot.hasData) {
+                return IconButton(
+                  icon: Icon(
+                    Feather.bell,
+                    color: Colors.grey.shade800,
+                    size: sizeWidth / 16.5,
+                  ),
+                  onPressed: () {},
+                );
+              }
+
+              return IconButton(
+                icon: Icon(
+                  snapshot.data.documents[0]['notifications']
+                      ? Feather.bell
+                      : Feather.bell_off,
+                  color: Colors.grey.shade800,
+                  size: sizeWidth / 16.5,
+                ),
+                onPressed: () async {
+                  await _updateNotification(
+                      snapshot.data.documents[0].reference);
+                },
+              );
+            },
           ),
         ],
       ),

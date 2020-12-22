@@ -21,12 +21,12 @@ class _NotificationItemState extends State<NotificationItem> {
     final size = MediaQuery.of(context).size;
     return Container(
       margin: EdgeInsets.only(
-        top: 8.0,
+        top: 10.0,
       ),
       padding: EdgeInsets.only(
         left: 20.0,
         right: 8.0,
-        bottom: 8.0,
+        bottom: 10.0,
       ),
       decoration: BoxDecoration(
           border: Border(
@@ -63,7 +63,7 @@ class _NotificationItemState extends State<NotificationItem> {
             ),
           ),
           SizedBox(
-            width: 8.0,
+            width: 20.0,
           ),
           widget.urlToImage == ''
               ? Container()
@@ -78,15 +78,13 @@ class _NotificationItemState extends State<NotificationItem> {
                     );
                   },
                   child: Container(
-                    height: 48.0,
-                    width: 48.0,
+                    height: 55.0,
+                    width: 55.0,
                     decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(
-                        2.0,
-                      ),
+                      shape: BoxShape.circle,
                       border: Border.all(
                         color: Colors.blueGrey.shade100,
-                        width: .8,
+                        width: 1.8,
                       ),
                       image: DecorationImage(
                         image: NetworkImage(widget.urlToImage),
