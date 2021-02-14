@@ -1,34 +1,34 @@
 {
   "project_info": {
-    "project_number": "1037020081116",
-    "firebase_url": "https://project-message-65c25.firebaseio.com",
-    "project_id": "project-message-65c25",
-    "storage_bucket": "project-message-65c25.appspot.com"
+    "project_number": "375608740631",
+    "firebase_url": "https://video-call-intercom-default-rtdb.firebaseio.com",
+    "project_id": "video-call-intercom",
+    "storage_bucket": "video-call-intercom.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:1037020081116:android:84a7fe2c8616fe7893fd19",
+        "mobilesdk_app_id": "1:375608740631:android:cd6ccab3cb202f04540552",
         "android_client_info": {
-          "package_name": "com.example.project_message_demo"
+          "package_name": "com.lambiengcode.intercom"
         }
       },
       "oauth_client": [
         {
-          "client_id": "1037020081116-ph7vsp91fahrv7g83nogec7sgfedcn0g.apps.googleusercontent.com",
+          "client_id": "375608740631-bd415qqs63g5onsfa7qd35p62bvh28k1.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyDYsG_IxktmhZyYKQIDwZQ1rQfmawVGPy8"
+          "current_key": "AIzaSyC41j6MlW90MKjxZZoY_8isJQqPk9HAldU"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "1037020081116-ph7vsp91fahrv7g83nogec7sgfedcn0g.apps.googleusercontent.com",
+              "client_id": "375608740631-bd415qqs63g5onsfa7qd35p62bvh28k1.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

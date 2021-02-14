@@ -6,21 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:project_message_demo/src/page/notification_page/notification_page.dart';
 import 'package:project_message_demo/src/page/receive_page/receive_page.dart';
 
-Future<dynamic> myBackgroundMessageHandler(Map<String, dynamic> message) async {
-  if (message.containsKey('data')) {
-    // Handle data message
-    final dynamic data = message['data'];
-  }
-
-  if (message.containsKey('notification')) {
-    // Handle notification message
-    final dynamic notification = message['notification'];
-    print(notification);
-  }
-
-  // Or do other work.
-}
-
 class HomePage extends StatefulWidget {
   final String uid;
   final Size size;
@@ -40,6 +25,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
   _saveDeviceToken() async {
     // Get the current user
     String uid = widget.uid;
+    print(widget.uid);
     // FirebaseUser user = await _auth.currentUser();
 
     // Get the token for this device
@@ -123,7 +109,6 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
                 },
               );
       },
-      onBackgroundMessage: myBackgroundMessageHandler,
     );
   }
 

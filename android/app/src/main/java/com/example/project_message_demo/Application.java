@@ -1,4 +1,4 @@
-package com.example.project_message_demo;
+package com.lambiengcode.intercom;
 
 import io.flutter.app.FlutterApplication;
 import io.flutter.plugin.common.PluginRegistry;
